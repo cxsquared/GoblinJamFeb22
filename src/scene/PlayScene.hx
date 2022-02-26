@@ -1,5 +1,10 @@
 package scene;
 
+import format.mp3.Data.Layer;
+import ui.Bar;
+import component.UiBar;
+import system.CityController;
+import system.UiBarController;
 import dialogue.event.StartNode.StartDialogueNode;
 import event.TeleportToNearByTown;
 import event.CityFavorChange;
@@ -113,9 +118,11 @@ class PlayScene extends GameScene {
 
 		world.addSystem(new PlayerController());
 		world.addSystem(new CameraController(s2d, console));
+		world.addSystem(new CityController());
 		world.addSystem(new LevelCollisionController(level.l_Collision));
 		world.addSystem(new Collision());
 		world.addSystem(new EncounterController(eventBus));
+		world.addSystem(new UiBarController());
 		world.addSystem(new Renderer(camera));
 
 		#if debug
@@ -137,7 +144,7 @@ class PlayScene extends GameScene {
 			hxd.Math.shuffle(encounterCities);
 			var cityName = encounterCities[0];
 			var city = getCityByName(cityName).get(City);
-			city.favor += Math.floor(hxd.Math.clamp(e.amount, 0, city.maxFavor));
+			city.favor = Math.floor(hxd.Math.clamp(city.favor + e.amount, 0, city.maxFavor));
 		});
 
 		eventBus.subscribe(TeleportToNearByTown, function(e) {
@@ -232,9 +239,15 @@ class PlayScene extends GameScene {
 	}
 
 	function createCity(city:assets.World.Entity_City) {
+		var uiBar = new UiBar();
+		uiBar.bar = new Bar(64, 8);
+		uiBar.y = -8;
+		uiBar.x = city.width / 2 - 32;
+		layers.add(uiBar.bar, Const.UiLayerIndex);
 		var c = world.addEntity('city_${city.f_CityName.getName()}')
 			.add(new Transform(city.pixelX, city.pixelY, city.width, city.height))
 			.add(new Collidable(BOUNDS, 0, city.width, city.height))
+			.add(uiBar)
 			.add(new City(city.f_CityName));
 		cities.push(c);
 	}

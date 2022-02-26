@@ -7,10 +7,10 @@ What do you do?
     <<if $SwordFighting > 0>>
         You draw your sword and prepare to fight.
         With your sword skills you easily defeat the bandit.
-        <<cityfavor - 10>>
+        <<cityfavor + 10>>
     <<else>>
         The bandit is too strong for you. You run away crying.
-        <<cityfavor + 10>>
+        <<cityfavor - 10>>
         <<health - 10>>
     <<endif>>
 -> Run
