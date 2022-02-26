@@ -1,4 +1,4 @@
-title: Encounter0
+title: Lone Bandit 
 tags: random
 ---
 You see a lone bandit loitering on the road.
@@ -46,6 +46,58 @@ What do you do?
     <<else>>
         You and the bandit have a great night out.
         <<banditfavor + 10>>
+        <<cityfavor - 5>>
+    <<endif>>
+===
+title: Granny 
+tags: random
+---
+A little old lady seems to be gathering flowers by the road.
+What do you do?
+-> Fight
+    You challenge the lady to a fight!
+    All of a suden, she turns around and slices at you with a sword.
+    Everything goes black and you wake up in a nearby town.
+    <<health - 10>>
+    <<totown>>
+-> Run
+    You can't help but feel that the lady was out of place.
+    You decide to run away.
+    <<cityfavor - 10>>    
+-> Talk 
+    You talk to the lady and she tells you about her family.
+    There's no chance this grandma is up to no good.
+    You leave her be.
+-> Hide
+    You decide to watch the old lady from the shadows.
+    <<if $Sneak > 0>>
+        As you wait you hear foot steps coming up behind you.
+        You turn around and see a bandit approaching.
+        You manage to beat him in combat.
+        When you look back the old lady has dissapeared.
+        Interesting...
+        <<cityfavor + 25>>
+    <<else>>
+        All of a sudden you are hit from behind.
+        When you wake up all your belongings have been taken.
+        <<money - 50>>
+    <<endif>>
+-> Drink
+    You approach the lady and ask if she plans on making tea with the flowers she is picking.
+    She respondes that indeed she is and invites you to have a cup.
+    You follow her to her home where she brews you some tea.
+    <<if $Herbology > 0>>
+        As she is brewing the tea you notice that the leaves are very poisonous.
+        You quickly throw the tea.
+        It strikes the lady in the head and she falls to the ground.
+        You later find out she had been robbing passersby with her tea scheme.
+        The world feels like a better place now.
+        <<cityfavor + 25>>
+    <<else>>
+        Turns out those herbs where poisonous!
+        You pass out and wake up with all your goods taken.
+        <<health - 5>>
+        <<money - 50>>
         <<cityfavor - 5>>
     <<endif>>
 ===

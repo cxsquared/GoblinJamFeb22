@@ -23,6 +23,7 @@ enum SkillName {
 	WaitingTables;
 	Sneak;
 	Sprinting;
+	Herbology;
 }
 
 enum SkillLevel {

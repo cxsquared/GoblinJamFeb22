@@ -13,4 +13,5 @@ title:Skills
 <<declare $WaitingTables = 0>>
 <<declare $Sneak = 0>>
 <<declare $Sprinting = 0>>
+<<declare $Herbology= 0>>
 ===

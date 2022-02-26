@@ -1,5 +1,9 @@
 package scene;
 
+import dialogue.event.StartNode.StartDialogueNode;
+import event.TeleportToNearByTown;
+import event.CityFavorChange;
+import constant.CityNames.CityName;
 import constant.Skill.SkillName;
 import ecs.system.CollisionDebug;
 import system.EncounterController;
@@ -8,7 +12,6 @@ import event.PlayEncounter;
 import ecs.system.Collision;
 import h2d.Object;
 import ecs.system.DebugEntityController;
-import dn.heaps.ScreenWash;
 import ecs.system.LevelCollisionController;
 import component.Encounter;
 import ecs.component.Collidable;
@@ -45,6 +48,9 @@ class PlayScene extends GameScene {
 	var camera:Entity;
 	var dialogueManager:DialogueManager;
 	var dialogueBox:DialogueBoxController;
+	var cities = new Array<Entity>();
+	var encounterCities = new Array<CityName>();
+	var randomEncounters = new Array<String>();
 
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
@@ -55,6 +61,8 @@ class PlayScene extends GameScene {
 
 		levels = Assets.worldData;
 		dialogueManager = Assets.dialogueManager;
+
+		randomEncounters = dialogueManager.getNodeNames("random");
 	}
 
 	public override function init():Void {
@@ -119,13 +127,53 @@ class PlayScene extends GameScene {
 		#end
 
 		eventBus.subscribe(PlayEncounter, function(e) {
-			var possibleNodes = dialogueManager.getNodeNames("random");
-			dialogueManager.runNode(possibleNodes[0]);
+			encounterCities = e.encounter.cities;
+
+			hxd.Math.shuffle(randomEncounters);
+			dialogueManager.runNode(randomEncounters[0]);
+		});
+
+		eventBus.subscribe(CityFavorChange, function(e) {
+			hxd.Math.shuffle(encounterCities);
+			var cityName = encounterCities[0];
+			var city = getCityByName(cityName).get(City);
+			city.favor += Math.floor(hxd.Math.clamp(e.amount, 0, city.maxFavor));
+		});
+
+		eventBus.subscribe(TeleportToNearByTown, function(e) {
+			hxd.Math.shuffle(encounterCities);
+			var cityName = encounterCities[0];
+			var city = getCityByName(cityName);
+			var ct = city.get(Transform);
+
+			var pt = player.get(Transform);
+			var pv = player.get(Velocity);
+			pt.x = ct.x + ct.width / 2 - pt.width / 2;
+			pt.y = ct.y + ct.height / 2 - pt.height / 2;
+			pv.dx = 0;
+			pv.dy = 0;
+		});
+
+		eventBus.subscribe(StartDialogueNode, function(e) {
+			var pv = player.get(Velocity);
+			pv.dx = 0;
+			pv.dy = 0;
 		});
 
 		var uiParent = new Object();
 		layers.add(uiParent, Const.UiLayerIndex);
 		dialogueBox = new DialogueBoxController(eventBus, world, uiParent);
+	}
+
+	function getCityByName(name:CityName) {
+		for (city in cities) {
+			var c = city.get(City);
+			if (c.name == name) {
+				return city;
+			}
+		}
+
+		return null;
 	}
 
 	public override function update(dt:Float):Void {
@@ -161,7 +209,7 @@ class PlayScene extends GameScene {
 
 		var playerStart = level.l_Entities.all_PlayerStart[0];
 		if (playerStart != null) {
-			setupPlayer(playerStart);
+			player = setupPlayer(playerStart);
 		}
 
 		camera = setupCamera(player);
@@ -184,10 +232,11 @@ class PlayScene extends GameScene {
 	}
 
 	function createCity(city:assets.World.Entity_City) {
-		world.addEntity('city_${city.f_CityName.getName()}')
+		var c = world.addEntity('city_${city.f_CityName.getName()}')
 			.add(new Transform(city.pixelX, city.pixelY, city.width, city.height))
 			.add(new Collidable(BOUNDS, 0, city.width, city.height))
 			.add(new City(city.f_CityName));
+		cities.push(c);
 	}
 
 	function createEncounter(encounter:assets.World.Entity_Encounter, index:Int) {

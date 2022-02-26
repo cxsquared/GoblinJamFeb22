@@ -1,5 +1,10 @@
 package dialogue;
 
+import event.TeleportToNearByTown;
+import event.BanditFavorChange;
+import event.MoneyChange;
+import event.HealthChange;
+import event.CityFavorChange;
 import hxyarn.dialogue.Command;
 import hxyarn.dialogue.OptionSet;
 import hxyarn.dialogue.Line;
@@ -50,16 +55,16 @@ class DialogueManager {
 		});
 	}
 
-	public function getNodeNames(?filterByType = "") {
+	public function getNodeNames(?includesTag = "") {
 		var nodeNames = [];
 		for (nodeName in dialogue.allNodes) {
-			if (filterByType == "") {
+			if (includesTag == "") {
 				nodeNames.push(nodeName);
 				continue;
 			}
 
 			var tags = dialogue.getTagsForNode(nodeName);
-			if (tags.contains(filterByType)) {
+			if (tags.contains(includesTag)) {
 				nodeNames.push(nodeName);
 			}
 		}
@@ -143,7 +148,53 @@ class DialogueManager {
 	}
 
 	public function commandHandler(command:Command) {
+		if (StringTools.startsWith(command.text, "cityfavor")) {
+			var amount = getAmountFromChangeCommand(command.text);
+
+			eventBus.publishEvent(new CityFavorChange(amount));
+			resume();
+			return;
+		}
+
+		if (StringTools.startsWith(command.text, "health")) {
+			var amount = getAmountFromChangeCommand(command.text);
+			eventBus.publishEvent(new HealthChange(amount));
+			resume();
+			return;
+		}
+
+		if (StringTools.startsWith(command.text, "money")) {
+			var amount = getAmountFromChangeCommand(command.text);
+			eventBus.publishEvent(new MoneyChange(amount));
+			resume();
+			return;
+		}
+
+		if (StringTools.startsWith(command.text, "banditfavor")) {
+			var amount = getAmountFromChangeCommand(command.text);
+			eventBus.publishEvent(new BanditFavorChange(amount));
+			resume();
+			return;
+		}
+
+		if (command.text == "totown") {
+			eventBus.publishEvent(new TeleportToNearByTown());
+			resume();
+			return;
+		}
+
 		resume();
+	}
+
+	function getAmountFromChangeCommand(command:String):Int {
+		var parts = command.split(" ");
+		var sign = parts[1];
+		var amount = Std.parseInt(parts[2]);
+		if (sign == "-") {
+			amount *= -1;
+		}
+
+		return amount;
 	}
 
 	public function nodeCompleteHandler(nodeName:String) {
