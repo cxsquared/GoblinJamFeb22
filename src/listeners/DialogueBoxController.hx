@@ -1,5 +1,7 @@
 package listeners;
 
+import h2d.Interactive;
+import h2d.Flow;
 import assets.Assets;
 import hxd.res.DefaultFont;
 import hxyarn.dialogue.markup.MarkupParseResult;
@@ -25,6 +27,8 @@ class DialogueBoxController {
 	var dialogueName:ScaleGrid;
 	var dialogueTextName:HtmlText;
 	var dialogueText:HtmlText;
+	var options:Flow;
+	var textFlow:Flow;
 	var parent:Object;
 	var scene:Scene;
 	var world:World;
@@ -43,9 +47,10 @@ class DialogueBoxController {
 
 		dialogueBackground = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, parent);
 		dialogueBackground.visible = false;
+		dialogueBackground.color.a = .85;
 		dialogueBackground.width = scene.width - 8;
-		dialogueBackground.height = scene.height / 4 - 8;
-		dialogueBackground.setPosition(4, scene.height - scene.height / 4 - 4);
+		dialogueBackground.height = scene.height / 2 - 8;
+		dialogueBackground.setPosition(4, scene.height / 2 - scene.height / 4 - 4);
 		// dialogueBackground.filter = new Nothing();
 		var dialogueBackgroundSize = dialogueBackground.getSize();
 
@@ -56,7 +61,16 @@ class DialogueBoxController {
 		dialogueName.height = dialogueBackgroundSize.height / 5;
 		dialogueName.setPosition(dialogueBackground.x + 8, dialogueBackground.y - 8);
 
-		dialogueText = new HtmlText(Assets.font, dialogueBackground);
+		textFlow = new Flow(dialogueBackground);
+		textFlow.borderWidth = 8;
+		textFlow.borderHeight = 8;
+		textFlow.horizontalAlign = FlowAlign.Middle;
+		textFlow.verticalAlign = FlowAlign.Middle;
+		textFlow.minWidth = Std.int(dialogueBackgroundSize.width);
+		textFlow.minHeight = Std.int(dialogueBackgroundSize.height);
+		// textFlow.backgroundTile = h2d.Tile.fromColor(0xffffff, 32, 32);
+
+		dialogueText = new HtmlText(Assets.font);
 		dialogueText.maxWidth = dialogueBackgroundSize.width - 16;
 
 		dialogueTextName = new HtmlText(Assets.font, dialogueName);
@@ -64,12 +78,27 @@ class DialogueBoxController {
 		dialogueTextName.textAlign = Align.Center;
 		dialogueTextName.maxWidth = dialogueName.width;
 
+		options = new Flow();
+		options.borderWidth = 8;
+		options.borderHeight = 8;
+		options.layout = FlowLayout.Vertical;
+		options.horizontalAlign = FlowAlign.Middle;
+		options.verticalAlign = FlowAlign.Middle;
+		options.minWidth = Std.int(dialogueBackgroundSize.width);
+		options.minHeight = Std.int(dialogueBackgroundSize.height);
+		options.verticalSpacing = 8;
+
 		eventBus.subscribe(LineShown, this.showLine);
 		eventBus.subscribe(OptionsShown, this.showOptions);
 		eventBus.subscribe(DialogueComplete, this.dialogueFinished);
 	}
 
 	public function showLine(event:LineShown) {
+		if (!textFlow.contains(dialogueText)) {
+			textFlow.addChild(dialogueText);
+			textFlow.removeChild(options);
+		}
+		textFlow.addChild(dialogueText);
 		isTalking = true;
 		rate = 0.0;
 		currentText = event.line();
@@ -77,8 +106,6 @@ class DialogueBoxController {
 		dialogueTextName.text = event.characterName();
 
 		dialogueText.text = currentText;
-		var textWidth = dialogueText.calcTextWidth(currentText);
-		dialogueText.setPosition(dialogueBackground.getSize().width / 2 - textWidth / 2, dialogueBackground.getSize().height / 4);
 		dialogueText.text = "";
 
 		textState = DialogueBoxState.TypingText;
@@ -90,17 +117,44 @@ class DialogueBoxController {
 	}
 
 	public function showOptions(event:OptionsShown) {
-		var sb = new StringBuf();
+		options.removeChildren();
+		if (!textFlow.contains(options)) {
+			textFlow.addChild(options);
+			textFlow.removeChild(dialogueText);
+		}
+		isTalking = true;
+
+		var width = 0.0;
+		var height = 0.0;
+		var calculatingText = new Text(Assets.font);
+		for (option in event.options) {
+			calculatingText.text = option.text;
+			width = Math.max(width, calculatingText.calcTextWidth(option.text));
+			height = Math.max(height, calculatingText.getSize().height);
+		}
+		calculatingText.remove();
+		width += 32;
+		height += 16;
 
 		for (option in event.options) {
 			if (option.enabled) {
-				sb.add('${option.index + 1} ${option.text}<br/>');
+				var button = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, parent);
+				var text = new Text(Assets.font, button);
+				text.setPosition(8, 8);
+				text.text = option.text;
+
+				button.width = width;
+				button.height = height;
+
+				var i = new Interactive(button.getSize().width, button.getSize().height, button);
+				i.onClick = function(e) {
+					eventBus.publishEvent(new OptionSelected(option.index));
+				};
+				options.addChild(button);
 			}
 			numberOfOptions++;
 		}
 
-		dialogueText.text = sb.toString();
-		dialogueTextName.text = "Select";
 		textState = DialogueBoxState.WaitingForOptionSelection;
 	}
 

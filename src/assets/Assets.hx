@@ -51,6 +51,6 @@ class Assets {
 		#end
 
 		font = hxd.Res.font.pixel_unicode.Pixel_UniCode_fnt.toFont();
-		font.resizeTo(24);
+		font.resizeTo(32);
 	}
 }
