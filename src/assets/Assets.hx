@@ -1,10 +1,13 @@
 package assets;
 
+import dialogue.DialogueManager;
 import ecs.event.WorldReloaded;
 import ecs.event.EventBus;
 
 class Assets {
 	public static var worldData:assets.World;
+	public static var dialogueManager:DialogueManager;
+	public static var font:h2d.Font;
 
 	static var _initDone = false;
 
@@ -27,5 +30,27 @@ class Assets {
 				}, 200);
 			});
 		#end
+
+		dialogueManager = new DialogueManager(eventBus);
+
+		var yarnText = [hxd.Res.text.encounters.entry.getText(), hxd.Res.text.skills.entry.getText()];
+		var yarnFileNames = [hxd.Res.text.encounters.entry.name, hxd.Res.text.skills.entry.name];
+		dialogueManager.load(yarnText, yarnFileNames);
+
+		#if debug
+		hxd.Res.text.encounters.watch(function() {
+			dialogueManager.stop();
+			dialogueManager.unload();
+			dialogueManager.load(yarnText, yarnFileNames);
+		});
+		hxd.Res.text.skills.watch(function() {
+			dialogueManager.stop();
+			dialogueManager.unload();
+			dialogueManager.load(yarnText, yarnFileNames);
+		});
+		#end
+
+		font = hxd.Res.font.pixel_unicode.Pixel_UniCode_fnt.toFont();
+		font.resizeTo(24);
 	}
 }

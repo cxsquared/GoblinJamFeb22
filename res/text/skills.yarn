@@ -1,0 +1,16 @@
+title:Skills
+---
+// Skills 0 = no skill, 1 = basic, 2 = advanced
+<<declare $SwordFighting = 0>>
+<<declare $Swimming = 0>>
+<<declare $BreakDancing = 0>>
+<<declare $Beyblading = 0>>
+<<declare $TrashTalking = 0>>
+<<declare $ShakespeareanKnowledge = 0>>
+<<declare $Magic = 0>>
+<<declare $Drinking = 0>>
+<<declare $Drunking = 0>>
+<<declare $WaitingTables = 0>>
+<<declare $Sneak = 0>>
+<<declare $Sprinting = 0>>
+===

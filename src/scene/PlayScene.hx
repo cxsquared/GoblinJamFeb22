@@ -1,5 +1,14 @@
 package scene;
 
+import constant.Skill.SkillName;
+import ecs.system.CollisionDebug;
+import system.EncounterController;
+import listeners.DialogueBoxController;
+import event.PlayEncounter;
+import ecs.system.Collision;
+import h2d.Object;
+import ecs.system.DebugEntityController;
+import dn.heaps.ScreenWash;
 import ecs.system.LevelCollisionController;
 import component.Encounter;
 import ecs.component.Collidable;
@@ -25,6 +34,7 @@ import ecs.World;
 import h2d.Console;
 import h2d.Scene;
 import ecs.scene.GameScene;
+import dialogue.DialogueManager;
 
 class PlayScene extends GameScene {
 	var world:World;
@@ -33,6 +43,8 @@ class PlayScene extends GameScene {
 	var levels:assets.World;
 	var player:Entity;
 	var camera:Entity;
+	var dialogueManager:DialogueManager;
+	var dialogueBox:DialogueBoxController;
 
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
@@ -42,11 +54,49 @@ class PlayScene extends GameScene {
 		Assets.init(eventBus);
 
 		levels = Assets.worldData;
+		dialogueManager = Assets.dialogueManager;
 	}
 
 	public override function init():Void {
 		var s2d = getScene();
 		this.world = new World();
+
+		#if debug
+		console.addCommand("toggleDebug", "toggles debug text for an entity", [{name: "entityName", t: ConsoleArg.AString, opt: true}],
+			function(entityName:String) {
+				if (entityName != null && entityName != "") {
+					var e = world.getEntityByName(entityName);
+					e.debug = !e.debug;
+					return;
+				}
+
+				for (e in world.getEntities()) {
+					e.debug = !e.debug;
+				}
+			});
+
+		console.addCommand("setSkill", "sets a skill and level(0,1,2)", [
+			{name: "name", t: ConsoleArg.AString, opt: false},
+			{name: "level", t: ConsoleArg.AInt, opt: false}
+		], function(name:String, level:Int) {
+			var valid = false;
+			for (n in SkillName.createAll()) {
+				if (n.getName() == name) {
+					valid = true;
+					break;
+				}
+			}
+			if (!valid) {
+				console.log("invalid skil name");
+				return;
+			}
+			if (level < 0 || level > 2) {
+				console.log("invalid level");
+				return;
+			}
+			dialogueManager.storage.setValue("$" + name, level);
+		});
+		#end
 
 		layers = new Layers(this);
 
@@ -56,10 +106,33 @@ class PlayScene extends GameScene {
 		world.addSystem(new PlayerController());
 		world.addSystem(new CameraController(s2d, console));
 		world.addSystem(new LevelCollisionController(level.l_Collision));
+		world.addSystem(new Collision());
+		world.addSystem(new EncounterController(eventBus));
 		world.addSystem(new Renderer(camera));
+
+		#if debug
+		var debugParent = new Object();
+		layers.add(debugParent, Const.DebugLayerIndex);
+		world.addSystem(new DebugEntityController(world, debugParent));
+
+		world.addSystem(new CollisionDebug(camera, debugParent));
+		#end
+
+		eventBus.subscribe(PlayEncounter, function(e) {
+			dialogueManager.runNode("Encounter00");
+		});
+
+		var uiParent = new Object();
+		layers.add(uiParent, Const.UiLayerIndex);
+		dialogueBox = new DialogueBoxController(eventBus, world, uiParent);
 	}
 
 	public override function update(dt:Float):Void {
+		dialogueBox.update(dt);
+
+		if (dialogueBox.isTalking || console.isActive())
+			return;
+
 		world.update(dt);
 	}
 
@@ -103,6 +176,7 @@ class PlayScene extends GameScene {
 			.add(new Player())
 			.add(new Transform(playerStart.pixelX, playerStart.pixelY, playerSize, playerSize))
 			.add(new Velocity(0, 0))
+			.add(new Collidable(CollisionShape.BOUNDS, 0, playerSize, playerSize))
 			.add(new Renderable(bitmap));
 
 		return player;

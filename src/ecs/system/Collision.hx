@@ -24,12 +24,16 @@ class Collision implements IAllEntitySystems {
 					ec.bounds.y = et.y + ec.offsetY;
 			}
 			ec.colliding = false;
+			ec.previousEvent = ec.event;
 			ec.event = null;
 		}
 
 		// check for collisions
 		for (a in entities) {
 			var ac = a.get(Collidable);
+
+			if (ac.colliding)
+				continue;
 
 			for (b in entities) {
 				if (a.id == b.id)
@@ -49,29 +53,50 @@ class Collision implements IAllEntitySystems {
 				var bc = b.get(Collidable);
 
 				if (overlaps(ac, bc)) {
-					var event = new CollisionEvent(a, b);
+					var aevent = new CollisionEvent(a, b);
+					var bevent = new CollisionEvent(b, a);
+					if (ac.previousEvent == null) {
+						ac.justEntered = true;
+						bc.justEntered = true;
+					} else {
+						ac.justEntered = false;
+						bc.justEntered = false;
+					}
+					ac.justExited = false;
+					bc.colliding = true;
 					ac.colliding = true;
-					ac.event = event;
+					bc.colliding = true;
+					ac.event = aevent;
+					bc.event = bevent;
 					break;
 				}
 			}
+			if (ac.colliding == false) {
+				if (ac.previousEvent != null) {
+					ac.justExited = true;
+					continue;
+				}
+
+				ac.justEntered = false;
+				ac.justExited = false;
+			}
 		}
 	}
+}
 
-	function overlaps(ac:Collidable, bc:Collidable):Bool {
-		switch (ac.shape) {
-			case CIRCLE:
-				if (bc.shape == CIRCLE)
-					return ac.circle.collideCircle(bc.circle);
+function overlaps(ac:Collidable, bc:Collidable):Bool {
+	switch (ac.shape) {
+		case CIRCLE:
+			if (bc.shape == CIRCLE)
+				return ac.circle.collideCircle(bc.circle);
 
-				return ac.circle.collideBounds(bc.bounds);
-			case BOUNDS:
-				if (bc.shape == CIRCLE)
-					return bc.circle.collideBounds(ac.bounds);
+			return ac.circle.collideBounds(bc.bounds);
+		case BOUNDS:
+			if (bc.shape == CIRCLE)
+				return bc.circle.collideBounds(ac.bounds);
 
-				return ac.bounds.intersects(bc.bounds);
-		}
-
-		return false;
+			return ac.bounds.intersects(bc.bounds);
 	}
+
+	return false;
 }

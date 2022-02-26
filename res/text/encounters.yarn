@@ -1,0 +1,50 @@
+title: Encounter00
+---
+You see a lone bandit loitering on the road.
+What do you do?
+-> Fight
+    <<if $SwordFighting > 0>>
+        You draw your sword and prepare to fight.
+        With your sword skills you easily defeat the bandit.
+        <<cityfavor - 10>>
+    <<else>>
+        The bandit is too strong for you. You run away crying.
+        <<cityfavor + 10>>
+        <<health - 10>>
+    <<endif>>
+-> Run
+    <<if $Sprinting > 0>>
+        You yell at the bandit and begin sprinting.
+        With your skill you easily lead him away from the road and lose them in the forest.
+        <<cityfavor + 5>>
+    <<else>>
+        You run away screaming.
+        <<cityfavor - 20>>
+    <<endif>>
+-> Talk 
+    <<if $TrashTalking > 1>>
+        Your mad trash talk is getting to the bandit.
+        They get's so angry that he passes out in rage.
+        <<cityfavor + 20>>
+    <<else>>
+        The bandit attacks you as you strike up a conversation.
+        <<cityfavor + 10>>
+        <<health - 10>>
+    <<endif>>
+-> Hide
+    You hide behind a tree.
+    The bandit then proceeds to rob multiple people.
+    <<cityfavor - 10>>
+-> Drink
+    You offer a drink to the bandit which they gladly accepts.
+    <<if $Drunking > 0>>
+        You easily beat his drinking skills and they pass out.
+        You take this opertunity to rob the bandit and take him to the athorities.
+        <<cityfavor + 10>>
+        <<money + 10>>
+    <<else>>
+        You and the bandit have a great night out.
+        <<banditfavor + 10>>
+        <<cityfavor - 5>>
+    <<endif>>
+===

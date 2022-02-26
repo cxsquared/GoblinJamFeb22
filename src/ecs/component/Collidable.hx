@@ -9,9 +9,12 @@ import h2d.col.Circle;
 class Collidable implements IComponent {
 	public var colliding = false;
 	public var event:CollisionEvent;
+	public var previousEvent:CollisionEvent;
 	public var solid:Bool = false;
 	public var debug = false;
 	public var debugColor:Int;
+	public var justEntered = false;
+	public var justExited = false;
 
 	public var circle:Circle;
 	public var bounds:Bounds;
@@ -54,7 +57,7 @@ class Collidable implements IComponent {
 	public function remove() {}
 
 	public function debugText():String {
-		return '[Collidable] colliding: $colliding';
+		return '[Collidable] colliding: $colliding entered $justEntered exited $justExited';
 	}
 }
 

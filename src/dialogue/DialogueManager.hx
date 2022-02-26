@@ -19,7 +19,8 @@ import dialogue.event.LineShown;
 import dialogue.event.OptionsShown.OptionChoice;
 
 class DialogueManager {
-	var storage = new MemoryVariableStore();
+	public var storage = new MemoryVariableStore();
+
 	var dialogue:Dialogue;
 	var stringTable:Map<String, StringInfo>;
 	var lastNodeName:String;
@@ -129,7 +130,9 @@ class DialogueManager {
 		return getMarkupForLine(line).text;
 	}
 
-	public function commandHandler(command:Command) {}
+	public function commandHandler(command:Command) {
+		resume();
+	}
 
 	public function nodeCompleteHandler(nodeName:String) {
 		lastNodeName = nodeName;
