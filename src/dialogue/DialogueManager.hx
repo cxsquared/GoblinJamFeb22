@@ -50,8 +50,20 @@ class DialogueManager {
 		});
 	}
 
-	public function setPlayerName(name:String) {
-		storage.setValue("$playerName", name);
+	public function getNodeNames(?filterByType = "") {
+		var nodeNames = [];
+		for (nodeName in dialogue.allNodes) {
+			if (filterByType == "") {
+				nodeNames.push(nodeName);
+				continue;
+			}
+
+			var tags = dialogue.getTagsForNode(nodeName);
+			if (tags.contains(filterByType)) {
+				nodeNames.push(nodeName);
+			}
+		}
+		return nodeNames;
 	}
 
 	public function load(texts:Array<String>, names:Array<String>) {

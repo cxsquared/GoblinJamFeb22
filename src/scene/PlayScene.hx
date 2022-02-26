@@ -119,7 +119,8 @@ class PlayScene extends GameScene {
 		#end
 
 		eventBus.subscribe(PlayEncounter, function(e) {
-			dialogueManager.runNode("Encounter00");
+			var possibleNodes = dialogueManager.getNodeNames("random");
+			dialogueManager.runNode(possibleNodes[0]);
 		});
 
 		var uiParent = new Object();

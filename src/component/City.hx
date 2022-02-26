@@ -6,6 +6,7 @@ import ecs.component.IComponent;
 
 class City implements IComponent {
 	public var name:CityName;
+	public var favor:Int = 100;
 
 	public function new(name:CityName) {
 		this.name = name;
