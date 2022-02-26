@@ -356,13 +356,13 @@ class PlayScene extends GameScene {
 				if (existingSkill.level.getIndex() < level.getIndex())
 					existingSkill.level = level;
 
-				dialogueManager.storage.setValue('${name.getName()}', level.getIndex());
+				dialogueManager.storage.setValue("$" + name.getName(), level.getIndex());
 				return;
 			}
 
 			var newSkill = new Skill(name, level);
 			existingSkills.push(newSkill);
-			dialogueManager.storage.setValue('${name.getName()}', level.getIndex());
+			dialogueManager.storage.setValue("$" + name.getName(), level.getIndex());
 		});
 
 		var uiParent = new Object();
