@@ -1,5 +1,8 @@
 package dialogue;
 
+import event.GainSkill;
+import event.NewQuest;
+import event.QuestCompleted;
 import event.TeleportToNearByTown;
 import event.BanditFavorChange;
 import event.MoneyChange;
@@ -179,6 +182,31 @@ class DialogueManager {
 
 		if (command.text == "totown") {
 			eventBus.publishEvent(new TeleportToNearByTown());
+			resume();
+			return;
+		}
+
+		if (StringTools.startsWith(command.text, "quest")) {
+			var q = new NewQuest();
+			if (StringTools.contains(command.text, "nearby")) {
+				q.nearset = true;
+			}
+
+			eventBus.publishEvent(q);
+			resume();
+			return;
+		}
+
+		if (StringTools.startsWith(command.text, "skill")) {
+			var s = new GainSkill();
+			var parts = command.text.split(" ");
+			if (parts.length > 1) {
+				s.skill = parts[1];
+			}
+			if (parts.length > 2) {
+				s.skill = parts[2];
+			}
+			eventBus.publishEvent(s);
 			resume();
 			return;
 		}

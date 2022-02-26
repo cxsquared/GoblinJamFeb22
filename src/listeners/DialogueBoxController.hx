@@ -50,13 +50,11 @@ class DialogueBoxController {
 		dialogueBackground.width = scene.width - 8;
 		dialogueBackground.height = scene.height / 2 - 8;
 		dialogueBackground.setPosition(4, scene.height / 2 - scene.height / 4 - 4);
-		// dialogueBackground.filter = new Nothing();
 		var dialogueBackgroundSize = dialogueBackground.getSize();
 
 		dialogueName = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, parent);
-		// dialogueName.filter = new Nothing();
 		dialogueName.visible = false;
-		dialogueName.width = dialogueBackgroundSize.width / 5;
+		dialogueName.width = dialogueBackgroundSize.width / 4;
 		dialogueName.height = dialogueBackgroundSize.height / 5;
 		dialogueName.setPosition(dialogueBackground.x + 8, dialogueBackground.y - 8);
 
@@ -112,6 +110,8 @@ class DialogueBoxController {
 		dialogueBackground.visible = true;
 		if (dialogueTextName.text != "") {
 			dialogueName.visible = true;
+		} else {
+			dialogueName.visible = false;
 		}
 	}
 

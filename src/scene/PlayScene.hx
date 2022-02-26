@@ -1,7 +1,10 @@
 package scene;
 
+import ecs.component.Ui;
+import event.QuestCompleted;
+import event.NewQuest;
+import event.EnteredCity;
 import constant.EncounterStage;
-import format.mp3.Data.Layer;
 import ui.Bar;
 import component.UiBar;
 import system.CityController;
@@ -60,7 +63,12 @@ class PlayScene extends GameScene {
 	var storyStarts = new Array<String>();
 	var storyMids = new Array<String>();
 	var storyEnds = new Array<String>();
+	var defaultQuestCompleted = new Array<String>();
 	var encounterStage = EncounterStage.StoryStart;
+	var currentCity:City;
+	var currentQuestTarget:City;
+	var questIcon:Entity;
+	var welcomed = false;
 
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
@@ -74,6 +82,7 @@ class PlayScene extends GameScene {
 
 		randomEncounters = dialogueManager.getNodeNames("random");
 		storyStarts = dialogueManager.getNodeNames("storyStart");
+		defaultQuestCompleted = dialogueManager.getNodeNames("defaultQuestCompleted");
 	}
 
 	public override function init():Void {
@@ -124,7 +133,7 @@ class PlayScene extends GameScene {
 
 		world.addSystem(new PlayerController());
 		world.addSystem(new CameraController(s2d, console));
-		world.addSystem(new CityController());
+		world.addSystem(new CityController(eventBus));
 		world.addSystem(new LevelCollisionController(level.l_Collision));
 		world.addSystem(new Collision());
 		world.addSystem(new EncounterController(eventBus));
@@ -188,9 +197,83 @@ class PlayScene extends GameScene {
 			pv.dy = 0;
 		});
 
+		eventBus.subscribe(EnteredCity, function(e) {
+			currentCity = e.city;
+			dialogueManager.storage.setValue("$currentCity", currentCity.name.getName());
+
+			if (currentCity == currentQuestTarget) {
+				cleanupQuest();
+
+				if (!welcomed) {
+					welcomed = true;
+					dialogueManager.runNode("Welcome");
+					return;
+				}
+
+				eventBus.publishEvent(new QuestCompleted());
+			}
+		});
+
+		eventBus.subscribe(QuestCompleted, function(e) {
+			var nodeToRun = dialogueManager.storage.getValue("$questComplete");
+			if (nodeToRun != null && nodeToRun.asString() != "") {
+				dialogueManager.runNode(nodeToRun.asString());
+				return;
+			}
+
+			hxd.Math.shuffle(defaultQuestCompleted);
+			dialogueManager.runNode(defaultQuestCompleted[0]);
+		});
+
+		eventBus.subscribe(NewQuest, function(e) {
+			if (currentQuestTarget != null) {
+				currentQuestTarget.favor = Math.floor(Math.max(0, currentQuestTarget.favor - 10));
+				currentQuestTarget.hasQuest = false;
+				currentQuestTarget = null;
+			}
+
+			if (questIcon == null)
+				setupQuestIcon();
+
+			var icon = questIcon.get(Renderable).drawable;
+			var questT = questIcon.get(Transform);
+			icon.visible = true;
+			if (e.nearset && encounterCities.length > 0) {
+				hxd.Math.shuffle(encounterCities);
+				var target = getCityByName(encounterCities[0]);
+				var tt = target.get(Transform);
+				currentQuestTarget = target.get(City);
+				currentQuestTarget.hasQuest = true;
+				questT.x = tt.x;
+				questT.y = tt.y;
+				return;
+			}
+
+			var validCities = cities.filter(function(c) {
+				var city = c.get(City);
+				return city.favor > 0 && city.name.getName() != currentCity.name.getName();
+			});
+
+			hxd.Math.shuffle(validCities);
+
+			var target = validCities[0];
+			var tt = target.get(Transform);
+			currentQuestTarget = target.get(City);
+			currentQuestTarget.hasQuest = true;
+			questT.x = tt.x;
+			questT.y = tt.y;
+		});
+
 		var uiParent = new Object();
 		layers.add(uiParent, Const.UiLayerIndex);
 		dialogueBox = new DialogueBoxController(eventBus, world, uiParent);
+	}
+
+	function cleanupQuest() {
+		currentQuestTarget = null;
+		if (questIcon != null) {
+			questIcon.get(Renderable).drawable.visible = false;
+		}
 	}
 
 	function getCityByName(name:CityName) {
@@ -211,6 +294,14 @@ class PlayScene extends GameScene {
 			return;
 
 		world.update(dt);
+	}
+
+	function setupQuestIcon() {
+		var questIconTile = hxd.Res.sprites.Menu_icons_16x16.toTile().sub(0, 9 * 16, 16, 16);
+		var questIconBitmap = new Bitmap(questIconTile);
+		questIconBitmap.visible = false;
+		layers.add(questIconBitmap, Const.UiLayerIndex);
+		questIcon = world.addEntity("quest").add(new Transform(0, 0, 16, 16)).add(new Renderable(questIconBitmap));
 	}
 
 	function setupLevel(level:assets.World.World_Level) {

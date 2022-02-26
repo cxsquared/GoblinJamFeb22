@@ -12,6 +12,7 @@ import ecs.system.IPerEntitySystem;
 
 class EncounterController implements IPerEntitySystem {
 	var eventBus:EventBus;
+	var firstEncounter = false;
 
 	public function new(eventBus:EventBus) {
 		this.eventBus = eventBus;
@@ -22,7 +23,13 @@ class EncounterController implements IPerEntitySystem {
 		var e = entity.get(Encounter);
 
 		if (c.justEntered && c.event != null && c.event.target.has(Player)) {
-			if (MathUtils.roll(6) > 0) { // TODO figure out chance
+			if (firstEncounter == false) {
+				firstEncounter = true;
+				eventBus.publishEvent(new PlayEncounter(e));
+				return;
+			}
+
+			if (MathUtils.roll(3) == 3) {
 				eventBus.publishEvent(new PlayEncounter(e));
 			}
 		}
