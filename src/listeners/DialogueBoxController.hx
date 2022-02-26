@@ -3,7 +3,6 @@ package listeners;
 import h2d.Interactive;
 import h2d.Flow;
 import assets.Assets;
-import hxd.res.DefaultFont;
 import hxyarn.dialogue.markup.MarkupParseResult;
 import h2d.HtmlText;
 import dialogue.event.OptionSelected;
@@ -117,6 +116,8 @@ class DialogueBoxController {
 	}
 
 	public function showOptions(event:OptionsShown) {
+		dialogueName.visible = false;
+
 		options.removeChildren();
 		if (!textFlow.contains(options)) {
 			textFlow.addChild(options);

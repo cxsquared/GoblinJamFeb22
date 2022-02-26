@@ -33,8 +33,16 @@ class Assets {
 
 		dialogueManager = new DialogueManager(eventBus);
 
-		var yarnText = [hxd.Res.text.encounters.entry.getText(), hxd.Res.text.skills.entry.getText()];
-		var yarnFileNames = [hxd.Res.text.encounters.entry.name, hxd.Res.text.skills.entry.name];
+		var yarnText = [
+			hxd.Res.text.encounters.entry.getText(),
+			hxd.Res.text.skills.entry.getText(),
+			hxd.Res.text.storyStart.entry.getText()
+		];
+		var yarnFileNames = [
+			hxd.Res.text.encounters.entry.name,
+			hxd.Res.text.skills.entry.name,
+			hxd.Res.text.storyStart.entry.name
+		];
 		dialogueManager.load(yarnText, yarnFileNames);
 
 		#if debug
@@ -44,6 +52,11 @@ class Assets {
 			dialogueManager.load(yarnText, yarnFileNames);
 		});
 		hxd.Res.text.skills.watch(function() {
+			dialogueManager.stop();
+			dialogueManager.unload();
+			dialogueManager.load(yarnText, yarnFileNames);
+		});
+		hxd.Res.text.storyStart.watch(function() {
 			dialogueManager.stop();
 			dialogueManager.unload();
 			dialogueManager.load(yarnText, yarnFileNames);

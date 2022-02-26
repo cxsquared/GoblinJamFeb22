@@ -1,0 +1,40 @@
+title: New Kid
+tags: storyStart
+---
+Bandit Grunt: What do we have here?
+Bandit Grunt: A fresh new hero trying to keep the peace? 
+Bandit Grunt: We run these lands and there's nothing you can do to stop us.
+Bandit Grunt: Just turn around and go home.
+What do you do?
+-> Fight
+    You step up to the bandit with your sword drawn.
+    You swing at the bandit but he parries your blow.
+    Your sword falls from you hand.
+    Bandit Grunt: You've not worth my time. 
+    Bandit Grunt: Run on back to the city "hero".
+-> Run
+    You turn around and start running.
+    Bandit Grunt: You made the right choice.
+-> Talk 
+    You stumble over your words as you try to reason with the Bandit.
+    Bandit Grunt: There's no need for words. 
+    Bandit Grunt: Draw your sword if you really want to talk
+    You start to back up and turn to walk away.
+    Bandit Grunt: You made the right choice.
+    Bandit Grunt: Run on back to the city "hero".
+-> Hide
+    You attempt to sneak and hide behind a tree.
+    Bandit Grunt: ???
+    Bandit Grunt: What are you doing?
+    Bandit Grunt: You know I can see you right?
+    Bandit Grunt: You've got to be kidding me. 
+    Bandit Grunt: Whatever, I don't have time for this.
+    The bandit walks over to you and throws you into the middle of the street.
+    Bandit Grunt: Run on back to the city "hero".
+-> Drink
+    You take a big swig from you flask.
+    The bandit walks over and rips your flask from your hand.
+    Bandit Grunt: Ugh you can only afford the cheap stuff.
+    Bandit Grunt: You've not worth my time. 
+    Bandit Grunt: Run on back to the city "hero".
+===

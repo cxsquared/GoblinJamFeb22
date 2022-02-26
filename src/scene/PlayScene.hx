@@ -1,5 +1,6 @@
 package scene;
 
+import constant.EncounterStage;
 import format.mp3.Data.Layer;
 import ui.Bar;
 import component.UiBar;
@@ -56,6 +57,10 @@ class PlayScene extends GameScene {
 	var cities = new Array<Entity>();
 	var encounterCities = new Array<CityName>();
 	var randomEncounters = new Array<String>();
+	var storyStarts = new Array<String>();
+	var storyMids = new Array<String>();
+	var storyEnds = new Array<String>();
+	var encounterStage = EncounterStage.StoryStart;
 
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
@@ -68,6 +73,7 @@ class PlayScene extends GameScene {
 		dialogueManager = Assets.dialogueManager;
 
 		randomEncounters = dialogueManager.getNodeNames("random");
+		storyStarts = dialogueManager.getNodeNames("storyStart");
 	}
 
 	public override function init():Void {
@@ -136,8 +142,23 @@ class PlayScene extends GameScene {
 		eventBus.subscribe(PlayEncounter, function(e) {
 			encounterCities = e.encounter.cities;
 
-			hxd.Math.shuffle(randomEncounters);
-			dialogueManager.runNode(randomEncounters[0]);
+			switch (encounterStage) {
+				case StoryStart:
+					hxd.Math.shuffle(storyStarts);
+					dialogueManager.runNode(storyStarts[0]);
+					encounterStage = EncounterStage.Random;
+				case StoryMiddle:
+				case StoryEnd:
+				case _:
+					hxd.Math.shuffle(randomEncounters);
+					var encounter = randomEncounters.pop();
+					dialogueManager.runNode(encounter);
+					if (randomEncounters.length == 0) {
+						encounterStage = EncounterStage.StoryEnd;
+					} else {
+						encounterStage = EncounterStage.StoryMiddle;
+					}
+			}
 		});
 
 		eventBus.subscribe(CityFavorChange, function(e) {
