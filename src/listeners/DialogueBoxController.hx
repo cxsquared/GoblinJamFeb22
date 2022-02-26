@@ -129,8 +129,8 @@ class DialogueBoxController {
 		var height = 0.0;
 		var calculatingText = new Text(Assets.font);
 		for (option in event.options) {
-			calculatingText.text = option.text;
-			width = Math.max(width, calculatingText.calcTextWidth(option.text));
+			calculatingText.text = option.markup.text;
+			width = Math.max(width, calculatingText.calcTextWidth(option.markup.text));
 			height = Math.max(height, calculatingText.getSize().height);
 		}
 		calculatingText.remove();
@@ -140,9 +140,14 @@ class DialogueBoxController {
 		for (option in event.options) {
 			if (option.enabled) {
 				var button = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, options);
-				var text = new Text(Assets.font, button);
+				var text = new HtmlText(Assets.font, button);
 				text.setPosition(8, 8);
-				text.text = option.text;
+				var pluralAttribute = option.markup.tryGetAttributeWithName("plural");
+				if (pluralAttribute != null && pluralAttribute.properties[0].value.integerValue > 0) {
+					text.text = '<font color="#ffff00">${option.text}</font>';
+				} else {
+					text.text = option.text;
+				}
 
 				button.width = width;
 				button.height = height;

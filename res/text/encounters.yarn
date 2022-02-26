@@ -3,7 +3,7 @@ tags: random
 ---
 You see a lone bandit loitering on the road.
 What do you do?
--> Fight
+-> [plural value={$SwordFighting} one="Fight" other="Fight" two="Fight" \]
     <<if $SwordFighting > 0>>
         You draw your sword and prepare to fight.
         With your sword skills you easily defeat the bandit.
@@ -13,7 +13,7 @@ What do you do?
         <<cityfavor - 10>>
         <<health - 10>>
     <<endif>>
--> Run
+-> [plural value={$Sprinting} one="Run" other="Run" two="Run" \]
     <<if $Sprinting > 0>>
         You yell at the bandit and begin sprinting.
         With your skill you easily lead him away from the road and lose them in the forest.
@@ -22,7 +22,7 @@ What do you do?
         You run away screaming.
         <<cityfavor - 20>>
     <<endif>>
--> Talk 
+-> [plural value={$TrashTalking} one="Talk" other="Talk" two="Talk" \]
     <<if $TrashTalking > 1>>
         Your mad trash talk is getting to the bandit.
         They get's so angry that he passes out in rage.
@@ -36,7 +36,7 @@ What do you do?
     You hide behind a tree.
     The bandit then proceeds to rob multiple people.
     <<cityfavor - 10>>
--> Drink
+-> [plural value={$Drunking} one="Drink" other="Drink" two="Drink" \]
     You offer a drink to the bandit which they gladly accepts.
     <<if $Drunking > 0>>
         You easily beat his drinking skills and they pass out.
@@ -68,7 +68,7 @@ What do you do?
     You talk to the lady and she tells you about her family.
     There's no chance this grandma is up to no good.
     You leave her be.
--> Hide
+-> [plural value={$Sneak} one="Hide" other="Hide" two="Hide" \]
     You decide to watch the old lady from the shadows.
     <<if $Sneak > 0>>
         As you wait you hear foot steps coming up behind you.
@@ -82,7 +82,7 @@ What do you do?
         When you wake up all your belongings have been taken.
         <<money - 50>>
     <<endif>>
--> Drink
+-> [plural value={$Herbology} one="Drink" other="Drink" two="Drink" \]
     You approach the lady and ask if she plans on making tea with the flowers she is picking.
     She respondes that indeed she is and invites you to have a cup.
     You follow her to her home where she brews you some tea.

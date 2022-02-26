@@ -1,11 +1,13 @@
 package dialogue.event;
 
+import hxyarn.dialogue.markup.MarkupParseResult;
 import ecs.event.IEvent;
 
 typedef OptionChoice = {
 	text:String,
 	index:Int,
-	enabled:Bool
+	enabled:Bool,
+	markup:MarkupParseResult
 }
 
 class OptionsShown implements IEvent {

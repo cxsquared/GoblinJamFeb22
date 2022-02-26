@@ -125,7 +125,8 @@ class DialogueManager {
 			optionChoices.push({
 				text: text,
 				index: i,
-				enabled: option.enabled
+				enabled: option.enabled,
+				markup: getMarkupForLine(option.line)
 			});
 		}
 

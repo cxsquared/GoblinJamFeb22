@@ -7,11 +7,9 @@ City Guard: They been breaking the connections between our cities for a while no
 City Guard: If you are willing to attempt to take them I can help you out.
 -> Sure!
     City Guard: Let me teach you this skill. I'm sure it'll help you along the way.
-    <<skill random>>
 -> I don't know...
     City Guard: Well let me teach you this skill anyway. I'm sure it'll help you along the way.
-    <<skill random>>
-
+<<skill random>>
 ===
 title: Default Completed 1
 tags: defaultQuestCompleted

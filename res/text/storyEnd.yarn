@@ -1,0 +1,53 @@
+title: Bandit Battle
+tags: storyEnd
+---
+Bandit King: So you are the little "hero" I've heard so much about.
+Bandit King: Let's finish this once and for all.
+What do you do?
+-> [plural value={$Beyblading + $SwordFighting} one="Fight" other="Fight" two="Fight" \]
+    <<if $Beyblading > 0>>
+        You let it rip straight into the bandit's throat.
+        Blood spirts out as the sharp edges of the Beyblade cut the skin.
+        Congrats! You have saved the lands.
+        <<endgame win>>
+    <<elseif $SwordFighting > 0>>
+        You both draw your blades and prepare to fight.
+        You exchange blows but your sword skill wins out.
+        You land one final blow and the bandit falls.
+        Congrats! You have saved the lands.
+        <<endgame win>>
+    <<else>>
+        You both draw your blades and prepare to fight.
+        You exchange blows but the bandit is too strong.
+        They land one final blow and the you fall to the ground.
+        The lands are doomed to be ruled by the bandits.
+        <<endgame lose>>
+    <<endif>>
+-> Run
+    Just like always you run away from the battle.
+    Bandit King: HA HA HA! You coward!
+    The lands are doomed to be ruled by the bandits.
+    <<endgame lose>>
+-> [plural value={$ShakespeareanKnowledge} one="Talk" other="Talk" two="Talk" \]
+    <<if $ShakespeareanKnowledge > 0>>
+        You begin to explain why the bandit's are evil in perfect iambic pentameter.
+        You go on and on and on and on...
+        You can see the bandit's eye's getting heavy.
+        Finally the bandits all succumb to your Shakespearean Knowledge.
+        Congrats! You have saved the lands.
+        <<endgame win>>
+    <<else>>
+        You begin to explain why the bandit's are evil.
+        Bandit King: Your words mean nothing here.
+        In one fell sweep he slices your head off.
+        The lands are doomed to be ruled by the bandits.
+        <<endgame lose>>
+    <<endif>>
+    Bandit
+-> Hide <<if false>>
+    Still needs figured out.
+    <<endgame lose>>
+-> Drink <<if false>>
+    Still needs figured out.
+    <<endgame lose>>
+===
