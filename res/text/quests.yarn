@@ -1,6 +1,7 @@
 title: Welcome
 ---
 <<declare $currentCity = "">>
+<<declare $targetCity = "">>
 City Guard: Welcome to {$currentCity}!
 City Guard: Oh you ran into those pesky bandits?
 City Guard: They been breaking the connections between our cities for a while now.
@@ -11,10 +12,20 @@ City Guard: If you are willing to attempt to take them I can help you out.
     City Guard: Well let me teach you this skill anyway. I'm sure it'll help you along the way.
 <<skill random>>
 ===
+title: Default Started 1
+tags: questStart
+---
+<<pickcity>>
+City Guard: Welcome traveler.
+City Guard: We could use your assistance here. 
+City Guard: Can you travel to {$targetCity} for us and let them know we are safe.
+City Guard: Many thanks!
+<<quest>>
+===
 title: Default Completed 1
 tags: defaultQuestCompleted
 ---
 City Guard: Thanks for helping use out!
 City Guard: Here's a little something for your time.
-<<skill>>
+<<skill random>>
 ===

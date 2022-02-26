@@ -1,5 +1,6 @@
 package dialogue;
 
+import event.PickCity;
 import event.GainSkill;
 import event.NewQuest;
 import event.QuestCompleted;
@@ -193,7 +194,18 @@ class DialogueManager {
 				q.nearset = true;
 			}
 
+			var parts = command.text.split(" ");
+			if (parts.length > 1 && parts[1] != "nearby") {
+				q.completeQuestNode = parts[1];
+			}
+
 			eventBus.publishEvent(q);
+			resume();
+			return;
+		}
+
+		if (command.text == "pickcity") {
+			eventBus.publishEvent(new PickCity());
 			resume();
 			return;
 		}

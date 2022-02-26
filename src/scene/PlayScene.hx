@@ -1,5 +1,7 @@
 package scene;
 
+import hxd.Math;
+import event.PickCity;
 import ui.RandomSkill;
 import ecs.utils.MathUtils;
 import constant.Skill;
@@ -68,13 +70,20 @@ class PlayScene extends GameScene {
 	var storyMids = new Array<String>();
 	var storyEnds = new Array<String>();
 	var defaultQuestCompleted = new Array<String>();
+	var questStart = new Array<String>();
+	var questEndNode = "";
+	var nextTargetCity:Entity;
 	var encounterStage = EncounterStage.StoryStart;
 	var currentCity:City;
 	var currentQuestTarget:City;
+	var availableQuestTarget:City;
 	var questIcon:Entity;
 	var welcomed = false;
 	var availableSkills:Array<Skill>;
 	var randomSkill:RandomSkill;
+	var questTime = 5.0;
+	var timeTillNextQuest = 5.0;
+	var gettingQuest = false;
 
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
@@ -89,6 +98,7 @@ class PlayScene extends GameScene {
 		randomEncounters = dialogueManager.getNodeNames("random");
 		storyStarts = dialogueManager.getNodeNames("storyStart");
 		defaultQuestCompleted = dialogueManager.getNodeNames("defaultQuestCompleted");
+		questStart = dialogueManager.getNodeNames("questStart");
 
 		availableSkills = Skill.all();
 	}
@@ -171,6 +181,12 @@ class PlayScene extends GameScene {
 			}
 		});
 
+		eventBus.subscribe(PickCity, function(e) {
+			nextTargetCity = getQuestCity();
+
+			dialogueManager.storage.setValue("$targetCity", nextTargetCity.get(City).name.getName());
+		});
+
 		eventBus.subscribe(CityFavorChange, function(e) {
 			hxd.Math.shuffle(encounterCities);
 			var cityName = encounterCities[0];
@@ -218,12 +234,22 @@ class PlayScene extends GameScene {
 				}
 
 				eventBus.publishEvent(new QuestCompleted());
+				return;
+			}
+
+			if (currentCity == availableQuestTarget) {
+				gettingQuest = true;
+				cleanupQuest();
+				Math.shuffle(questStart);
+				dialogueManager.runNode(questStart[0]);
+				return;
 			}
 		});
 
 		eventBus.subscribe(QuestCompleted, function(e) {
+			timeTillNextQuest = questTime;
 			var nodeToRun = dialogueManager.storage.getValue("$questComplete");
-			if (nodeToRun != null && nodeToRun.asString() != "") {
+			if (nodeToRun != null && nodeToRun.type != null && nodeToRun.asString() != "") {
 				dialogueManager.runNode(nodeToRun.asString());
 				return;
 			}
@@ -233,6 +259,7 @@ class PlayScene extends GameScene {
 		});
 
 		eventBus.subscribe(NewQuest, function(e) {
+			gettingQuest = false;
 			if (currentQuestTarget != null) {
 				currentQuestTarget.favor = Math.floor(Math.max(0, currentQuestTarget.favor - 10));
 				currentQuestTarget.hasQuest = false;
@@ -256,14 +283,28 @@ class PlayScene extends GameScene {
 				return;
 			}
 
-			var validCities = cities.filter(function(c) {
-				var city = c.get(City);
-				return city.favor > 0 && city.name.getName() != currentCity.name.getName();
-			});
+			if (e.target != null) {
+				var target = getCityByName(e.target);
+				var tt = target.get(Transform);
+				currentQuestTarget = target.get(City);
+				currentQuestTarget.hasQuest = true;
+				questT.x = tt.x;
+				questT.y = tt.y;
+				return;
+			}
 
-			hxd.Math.shuffle(validCities);
+			if (nextTargetCity != null) {
+				var target = nextTargetCity;
+				var tt = target.get(Transform);
+				currentQuestTarget = target.get(City);
+				currentQuestTarget.hasQuest = true;
+				questT.x = tt.x;
+				questT.y = tt.y;
+				nextTargetCity = null;
+				return;
+			}
 
-			var target = validCities[0];
+			var target = getQuestCity();
 			var tt = target.get(Transform);
 			currentQuestTarget = target.get(City);
 			currentQuestTarget.hasQuest = true;
@@ -315,11 +356,13 @@ class PlayScene extends GameScene {
 				if (existingSkill.level.getIndex() < level.getIndex())
 					existingSkill.level = level;
 
+				dialogueManager.storage.setValue('${name.getName()}', level.getIndex());
 				return;
 			}
 
 			var newSkill = new Skill(name, level);
 			existingSkills.push(newSkill);
+			dialogueManager.storage.setValue('${name.getName()}', level.getIndex());
 		});
 
 		var uiParent = new Object();
@@ -329,9 +372,28 @@ class PlayScene extends GameScene {
 
 	function cleanupQuest() {
 		currentQuestTarget = null;
+		availableQuestTarget = null;
+
 		if (questIcon != null) {
 			questIcon.get(Renderable).drawable.visible = false;
 		}
+	}
+
+	function getQuestCity():Entity {
+		var validCities = cities.filter(function(c) {
+			var city = c.get(City);
+			if (city.favor <= 0)
+				return false;
+
+			if (currentCity != null && city.name.getName() == currentCity.name.getName())
+				return false;
+
+			return true;
+		});
+
+		hxd.Math.shuffle(validCities);
+
+		return validCities[0];
 	}
 
 	function getCityByName(name:CityName) {
@@ -352,6 +414,26 @@ class PlayScene extends GameScene {
 			return;
 
 		world.update(dt);
+
+		if (availableQuestTarget == null && currentQuestTarget == null && welcomed && !gettingQuest) {
+			timeTillNextQuest -= dt;
+			if (timeTillNextQuest < 0) {
+				if (questIcon == null)
+					setupQuestIcon();
+
+				var icon = questIcon.get(Renderable).drawable;
+				var questT = questIcon.get(Transform);
+				icon.visible = true;
+
+				var target = getQuestCity();
+				var tt = target.get(Transform);
+				availableQuestTarget = target.get(City);
+				questT.x = tt.x;
+				questT.y = tt.y;
+				nextTargetCity = null;
+				return;
+			}
+		}
 	}
 
 	function setupQuestIcon() {
