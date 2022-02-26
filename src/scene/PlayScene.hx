@@ -174,8 +174,14 @@ class PlayScene extends GameScene {
 		eventBus.subscribe(CityFavorChange, function(e) {
 			hxd.Math.shuffle(encounterCities);
 			var cityName = encounterCities[0];
-			var city = getCityByName(cityName).get(City);
+			var cityEntity = getCityByName(cityName);
+			var city = cityEntity.get(City);
 			city.favor = Math.floor(hxd.Math.clamp(city.favor + e.amount, 0, city.maxFavor));
+
+			if (city.favor <= 0) {
+				var ct = cityEntity.get(Transform);
+				createFire(ct.x, ct.y);
+			}
 		});
 
 		eventBus.subscribe(TeleportToNearByTown, function(e) {
@@ -433,5 +439,13 @@ class PlayScene extends GameScene {
 			.add(new Camera(target, cameraBounds, s2d.width / 2, s2d.height / 2));
 
 		return camera;
+	}
+
+	function createFire(x:Float, y:Float) {
+		var fireTile = hxd.Res.sprites.map_sheet.toTile().sub(19 * 32, 15 * 32, 63, 32);
+		var fireBitmap = new Bitmap(fireTile);
+		layers.add(fireBitmap, Const.EnityLayerIndex);
+
+		world.addEntity("fire").add(new Transform(x, y, 32, 32)).add(new Renderable(fireBitmap));
 	}
 }
