@@ -139,7 +139,7 @@ class DialogueBoxController {
 
 		for (option in event.options) {
 			if (option.enabled) {
-				var button = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, parent);
+				var button = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, options);
 				var text = new Text(Assets.font, button);
 				text.setPosition(8, 8);
 				text.text = option.text;
@@ -151,7 +151,6 @@ class DialogueBoxController {
 				i.onClick = function(e) {
 					eventBus.publishEvent(new OptionSelected(option.index));
 				};
-				options.addChild(button);
 			}
 			numberOfOptions++;
 		}

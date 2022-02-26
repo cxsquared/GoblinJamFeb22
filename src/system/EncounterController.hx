@@ -29,7 +29,7 @@ class EncounterController implements IPerEntitySystem {
 				return;
 			}
 
-			if (MathUtils.roll(3) == 3) {
+			if (MathUtils.roll(6) > 2) {
 				eventBus.publishEvent(new PlayEncounter(e));
 			}
 		}

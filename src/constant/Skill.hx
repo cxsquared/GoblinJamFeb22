@@ -8,6 +8,24 @@ class Skill {
 		this.name = name;
 		this.level = level;
 	}
+
+	public static function all():Array<Skill> {
+		var skills = [];
+		for (s in SkillName.createAll()) {
+			skills.push(new Skill(s, SkillLevel.None));
+		}
+
+		return skills;
+	}
+
+	public static function isValid(name:String):Bool {
+		for (n in SkillName.createAll()) {
+			if (n.getName() == name) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
 
 enum SkillName {

@@ -200,7 +200,7 @@ class DialogueManager {
 		if (StringTools.startsWith(command.text, "skill")) {
 			var s = new GainSkill();
 			var parts = command.text.split(" ");
-			if (parts.length > 1) {
+			if (parts.length > 1 && parts[1] != "random") {
 				s.skill = parts[1];
 			}
 			if (parts.length > 2) {

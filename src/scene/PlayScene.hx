@@ -1,5 +1,9 @@
 package scene;
 
+import ui.RandomSkill;
+import ecs.utils.MathUtils;
+import constant.Skill;
+import event.GainSkill;
 import ecs.component.Ui;
 import event.QuestCompleted;
 import event.NewQuest;
@@ -69,6 +73,8 @@ class PlayScene extends GameScene {
 	var currentQuestTarget:City;
 	var questIcon:Entity;
 	var welcomed = false;
+	var availableSkills:Array<Skill>;
+	var randomSkill:RandomSkill;
 
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
@@ -83,6 +89,8 @@ class PlayScene extends GameScene {
 		randomEncounters = dialogueManager.getNodeNames("random");
 		storyStarts = dialogueManager.getNodeNames("storyStart");
 		defaultQuestCompleted = dialogueManager.getNodeNames("defaultQuestCompleted");
+
+		availableSkills = Skill.all();
 	}
 
 	public override function init():Void {
@@ -107,14 +115,7 @@ class PlayScene extends GameScene {
 			{name: "name", t: ConsoleArg.AString, opt: false},
 			{name: "level", t: ConsoleArg.AInt, opt: false}
 		], function(name:String, level:Int) {
-			var valid = false;
-			for (n in SkillName.createAll()) {
-				if (n.getName() == name) {
-					valid = true;
-					break;
-				}
-			}
-			if (!valid) {
+			if (!Skill.isValid(name)) {
 				console.log("invalid skil name");
 				return;
 			}
@@ -264,6 +265,57 @@ class PlayScene extends GameScene {
 			questT.y = tt.y;
 		});
 
+		eventBus.subscribe(GainSkill, function(e) {
+			if (e.skill == null || e.skill == "") {
+				var skills = [];
+				var tryIncludeUpgrade = MathUtils.roll(6) == 6;
+
+				if (tryIncludeUpgrade) {
+					var validUpgrades = player.get(Player).skills.filter(function(s) {
+						return s.level != SkillLevel.Advanced;
+					});
+
+					hxd.Math.shuffle(validUpgrades);
+					skills.push(validUpgrades[0]);
+				}
+
+				hxd.Math.shuffle(availableSkills);
+				while (availableSkills.length > 0 && skills.length < 3) {
+					skills.push(availableSkills.pop());
+				}
+
+				randomSkill = new RandomSkill(eventBus, skills, getScene());
+				layers.add(randomSkill, Const.UiLayerIndex);
+				return;
+			}
+
+			if (randomSkill != null) {
+				randomSkill.remove();
+				randomSkill = null;
+			}
+
+			var name = SkillName.createByName(e.skill);
+			var level = SkillLevel.createByIndex(e.level);
+
+			var existingSkills = player.get(Player).skills;
+			var existingSkill:Skill = null;
+			var possibleExisting = existingSkills.filter(function(s) {
+				return s.name == name;
+			});
+			if (possibleExisting.length > 0)
+				existingSkill = possibleExisting[0];
+
+			if (existingSkill != null) {
+				if (existingSkill.level.getIndex() < level.getIndex())
+					existingSkill.level = level;
+
+				return;
+			}
+
+			var newSkill = new Skill(name, level);
+			existingSkills.push(newSkill);
+		});
+
 		var uiParent = new Object();
 		layers.add(uiParent, Const.UiLayerIndex);
 		dialogueBox = new DialogueBoxController(eventBus, world, uiParent);
@@ -290,7 +342,7 @@ class PlayScene extends GameScene {
 	public override function update(dt:Float):Void {
 		dialogueBox.update(dt);
 
-		if (dialogueBox.isTalking || console.isActive())
+		if (dialogueBox.isTalking || console.isActive() || randomSkill != null)
 			return;
 
 		world.update(dt);
