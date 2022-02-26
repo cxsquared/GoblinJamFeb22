@@ -1,0 +1,8 @@
+-cp src
+-lib heaps
+-lib domkit
+-lib tweenxcore
+-lib ldtk-haxe-api
+-lib deepnightLibs
+-lib hxyarn
+-main Main
