@@ -1,5 +1,7 @@
-package system;
+package ecs.system;
 
+import component.Player;
+import constant.Const;
 import ecs.component.Velocity;
 import ecs.component.Transform;
 import ecs.component.Collidable;
@@ -10,16 +12,17 @@ class LevelCollisionController implements IPerEntitySystem {
 	public var viewOffsetX:Int = 0;
 	public var viewOffsetY:Int = 0;
 
-	var tileSize:Int = 16;
+	var level:assets.World.Layer_Collision;
+	var tileSize:Int = Const.TileSize;
 
-	public function new() {
+	public function new(level:assets.World.Layer_Collision) {
 		// pass in layers to check for collision
 		// from LDTK work
+		this.level = level;
 	}
 
 	public function update(entity:Entity, dt:Float) {
 		var t = entity.get(Transform);
-		var c = entity.get(Collidable);
 		var v = entity.get(Velocity);
 
 		var dx = v.dx * dt;
@@ -89,15 +92,13 @@ class LevelCollisionController implements IPerEntitySystem {
 
 	function hasCollision(cx:Int, cy:Int):Bool {
 		// Update based on LDTK data
-		// return !isValid(cx, cy) ? true : levelCollision.getInt(cx, cy) == 1 || levelForeground.hasAnyTileAt(cx, cy);
-		return false;
+		return !isValid(cx, cy) ? true : level.getInt(cx, cy) == 1;
 	}
 
 	function isValid(cx:Int, cy:Int):Bool {
 		// Update based on LDTK data
-		// return levelCollision.isCoordValid(cx, cy);
-		return true;
+		return level.isCoordValid(cx, cy);
 	}
 
-	public var forComponents:Array<Class<Dynamic>> = [Transform, Collidable, Velocity];
+	public var forComponents:Array<Class<Dynamic>> = [Transform, Player, Velocity];
 }
