@@ -247,7 +247,7 @@ class PlayScene extends GameScene {
 			if (p.health > 100)
 				p.health = 100;
 
-			if (p.health <= 100) {
+			if (p.health <= 0) {
 				eventBus.publishEvent(new GameEnd(false, "HealthDefeat"));
 			}
 		});

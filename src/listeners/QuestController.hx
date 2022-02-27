@@ -20,8 +20,8 @@ class QuestController {
 	public var availableQuestTarget:City;
 	public var questIcon:Entity;
 	public var welcomed = false;
-	public var questTime = 5.0;
-	public var timeTillNextQuest = 2.5;
+	public var questTime = 2.0;
+	public var timeTillNextQuest = 2.0;
 	public var gettingQuest = false;
 	public var nextTargetCity:Entity;
 	public var questEndNode = "";
@@ -77,7 +77,7 @@ class QuestController {
 		}
 	}
 
-	function updateQuestIconLocation(targetTransform:Transform){
+	function updateQuestIconLocation(targetTransform:Transform) {
 		var icon = questIcon.get(Renderable).drawable;
 		var questT = questIcon.get(Transform);
 		var x = targetTransform.x + targetTransform.width / 2 - questT.width;
