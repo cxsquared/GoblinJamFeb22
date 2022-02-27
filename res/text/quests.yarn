@@ -45,6 +45,12 @@ City Guard: If you take this package to {$targetCity} I can teach you a thing or
 City Guard: I'll meet you there. 
 <<quest Delivery1Complete>>
 ===
+title: Delivery1Complete
+---
+City Guard: Took you long enough.
+City Guard: Well thanks anyway. Here's your reward. 
+<<skill random>>
+===
 title: Delivery 2
 tags: questStart
 ---

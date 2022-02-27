@@ -21,7 +21,7 @@ class QuestController {
 	public var questIcon:Entity;
 	public var welcomed = false;
 	public var questTime = 5.0;
-	public var timeTillNextQuest = 5.0;
+	public var timeTillNextQuest = 2.5;
 	public var gettingQuest = false;
 	public var nextTargetCity:Entity;
 	public var questEndNode = "";
