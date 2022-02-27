@@ -45,10 +45,56 @@ City Guard: If you take this package to {$targetCity} I can teach you a thing or
 City Guard: I'll meet you there. 
 <<quest Delivery1Complete>>
 ===
-title: Delivery1Complete
+title: Delivery 2
+tags: questStart
 ---
-City Guard: Took you long enough.
-City Guard: Well thanks anyway. Here's your reward. 
+<<pickcity>>
+City Guard: Hey! We've gotten a lot of mint scout cookie orders from {$targetCity}.
+City Guard: Think you could deliver them for us?
+<<quest Delivery2Complete>>
+===
+title: Delivery3Complete
+---
+City Guard: You eat some cookies?
+City Guard: Well whatever, here's your reward.
+<<skill random>>
+===title: Delivery 3
+tags: questStart
+---
+<<pickcity>>
+City Guard: Think you could tell Jerry from {$targetCity} happy birthday?
+<<quest Delivery3Complete>>
+===
+title: Delivery3Complete
+---
+Jerry: Thanks, but it's not my birthday...
+Jerry: Well since you came all this way let me give you a reward.
+<<skill random>>
+===title: Delivery 4
+tags: questStart
+---
+<<pickcity>>
+City Guard: I know this is weird, but could you carry these chickens to {$targetCity}?
+<<quest Delivery4Complete>>
+===
+title: Delivery4Complete
+---
+City Guard: Why did you bring us 43 chickens?
+City Guard: How did you even carry this many chickens?
+City Guard: This is weird but I guess I should reward you.
+<<skill random>>
+===title: Delivery 5
+tags: questStart
+---
+<<pickcity>>
+City Guard: {$targetCity} has trivia night coming up and I always write the questions for it!
+City Guard: Unfortunately I hurt my leg and can't get there. Could you deliver the questions for me?
+<<quest Delivery5Complete>>
+===
+title: Delivery5Complete
+---
+City Guard: Trivia is saved! Thankyou!
+City Guard: Question 1: Who just made a delivery and is going to get a reward? YOU!!!
 <<skill random>>
 ===
 title: Default Completed 1
