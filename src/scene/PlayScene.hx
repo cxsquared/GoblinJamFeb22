@@ -318,6 +318,9 @@ class PlayScene extends GameScene {
 	public override function update(dt:Float):Void {
 		dialogueBox.update(dt);
 
+		if (randomSkill != null)
+			randomSkill.update(dt);
+
 		if (dialogueBox.isTalking || console.isActive() || randomSkill != null)
 			return;
 

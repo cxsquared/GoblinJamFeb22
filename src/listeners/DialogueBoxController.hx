@@ -15,9 +15,11 @@ import dialogue.event.LineShown;
 import h2d.Text;
 import h2d.ScaleGrid;
 import ecs.World;
+import ui.RandomSkill;
 import h2d.Scene;
 import h2d.Object;
 import ecs.event.EventBus;
+import ui.RandomSkill;
 
 class DialogueBoxController {
 	public var isTalking = false;
@@ -91,6 +93,7 @@ class DialogueBoxController {
 		eventBus.subscribe(DialogueComplete, this.dialogueFinished);
 	}
 
+
 	public function showLine(event:LineShown) {
 		if (!textFlow.contains(dialogueText)) {
 			textFlow.addChild(dialogueText);
@@ -108,7 +111,7 @@ class DialogueBoxController {
 
 		textState = DialogueBoxState.TypingText;
 
-		dialogueBackground.visible = true;
+  		dialogueBackground.visible = true;
 		if (dialogueTextName.text != "") {
 			dialogueName.visible = true;
 		} else {
@@ -136,7 +139,7 @@ class DialogueBoxController {
 		}
 		calculatingText.remove();
 		width += 32;
-		height += 16;
+ 		height += 16;
 
 		for (option in event.options) {
 			if (option.enabled) {
@@ -167,7 +170,8 @@ class DialogueBoxController {
 	public function dialogueFinished(event:DialogueComplete) {
 		dialogueBackground.visible = false;
 		dialogueName.visible = false;
-		textState = Hidden;
+		if (textState != DialogueBoxState.WaitingForSkillSelection)
+			textState = Hidden;
 		// Delay so we don't talk after finish
 		haxe.Timer.delay(function() {
 			isTalking = false;
@@ -186,7 +190,7 @@ class DialogueBoxController {
 		if (isTalking && Key.isPressed(Key.SPACE)) {
 			if (textState == TypingText) {
 				dialogueText.text = applyTextAttributes(currentText);
-				textState = DialogueBoxState.WaitingForContinue;
+   				textState = DialogueBoxState.WaitingForContinue;
 			} else if (textState == WaitingForContinue) {
 				eventBus.publishEvent(new NextLine());
 			}
@@ -291,4 +295,5 @@ enum DialogueBoxState {
 	WaitingForNextLine;
 	WaitingForContinue;
 	WaitingForOptionSelection;
+	WaitingForSkillSelection;
 }
