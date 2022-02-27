@@ -39,13 +39,15 @@ class Assets {
 			hxd.Res.text.storyStart.entry.getText(),
 			hxd.Res.text.storyEnd.entry.getText(),
 			hxd.Res.text.quests.entry.getText(),
+			hxd.Res.text.gameOver.entry.getText(),
 		];
 		var yarnFileNames = [
 			hxd.Res.text.encounters.entry.name,
 			hxd.Res.text.skills.entry.name,
 			hxd.Res.text.storyStart.entry.name,
 			hxd.Res.text.storyEnd.entry.name,
-			hxd.Res.text.quests.entry.name
+			hxd.Res.text.quests.entry.name,
+			hxd.Res.text.gameOver.entry.name,
 		];
 		dialogueManager.load(yarnText, yarnFileNames);
 

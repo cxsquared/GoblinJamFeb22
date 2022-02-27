@@ -1,5 +1,9 @@
 package scene;
 
+import ecs.event.ChangeSceneEvent;
+import event.DialogueHidden;
+import event.GameEnd;
+import dn.heaps.TiledTexture;
 import listeners.QuestController;
 import hxd.Math;
 import event.PickCity;
@@ -74,6 +78,9 @@ class PlayScene extends GameScene {
 	var encounterStage = EncounterStage.StoryStart;
 	var availableSkills:Array<Skill>;
 	var randomSkill:RandomSkill;
+	var gameOver = false;
+	var gameEndData:GameEnd;
+	var showEndDialogue = true;
 
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
@@ -180,6 +187,35 @@ class PlayScene extends GameScene {
 			if (city.favor <= 0) {
 				var ct = cityEntity.get(Transform);
 				createFire(ct.x, ct.y);
+			}
+
+			var totalFavor = 0;
+			for (city in cities) {
+				totalFavor += city.get(City).favor;
+			}
+
+			if (totalFavor / 5 <= 50) {
+				eventBus.publishEvent(new GameEnd(false, "FavorDefeat"));
+			}
+		});
+
+		eventBus.subscribe(GameEnd, function(e) {
+			gameOver = true;
+			gameEndData = e;
+		});
+
+		eventBus.subscribe(DialogueHidden, function(e) {
+			if (gameOver) {
+				if (showEndDialogue) {
+					showEndDialogue = false;
+					dialogueManager.runNode(gameEndData.textNode);
+					return;
+				}
+				if (gameEndData.winner) {
+					Game.globalEventBus.publishEvent(new ChangeSceneEvent(new VictoryScene(getScene(), console)));
+				} else {
+					Game.globalEventBus.publishEvent(new ChangeSceneEvent(new DefeatScene(getScene(), console)));
+				}
 			}
 		});
 

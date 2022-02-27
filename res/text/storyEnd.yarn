@@ -9,25 +9,25 @@ What do you do?
         You let it rip straight into the bandit's throat.
         Blood spirts out as the sharp edges of the Beyblade cut the skin.
         Congrats! You have saved the lands.
-        <<endgame win>>
+        <<endgame win banditkingdefeated>>
     <<elseif $SwordFighting > 0>>
         You both draw your blades and prepare to fight.
         You exchange blows but your sword skill wins out.
         You land one final blow and the bandit falls.
         Congrats! You have saved the lands.
-        <<endgame win>>
+        <<endgame win BanditKingDefeated>>
     <<else>>
         You both draw your blades and prepare to fight.
         You exchange blows but the bandit is too strong.
         They land one final blow and the you fall to the ground.
         The lands are doomed to be ruled by the bandits.
-        <<endgame lose>>
+        <<endgame lose BanditKingWon>>
     <<endif>>
 -> Run
     Just like always you run away from the battle.
     Bandit King: HA HA HA! You coward!
     The lands are doomed to be ruled by the bandits.
-    <<endgame lose>>
+    <<endgame lose BanditKingWon>>
 -> [plural value={$ShakespeareanKnowledge} one="Talk" other="Talk" two="Talk" /]
     <<if $ShakespeareanKnowledge > 0>>
         You begin to explain why the bandit's are evil in perfect iambic pentameter.
@@ -35,19 +35,19 @@ What do you do?
         You can see the bandit's eye's getting heavy.
         Finally the bandits all succumb to your Shakespearean Knowledge.
         Congrats! You have saved the lands.
-        <<endgame win>>
+        <<endgame win BanditKingDefeated>>
     <<else>>
         You begin to explain why the bandit's are evil.
         Bandit King: Your words mean nothing here.
         In one fell sweep he slices your head off.
         The lands are doomed to be ruled by the bandits.
-        <<endgame lose>>
+        <<endgame lose BanditKingWon>>
     <<endif>>
     Bandit
 -> Hide <<if false>>
     Still needs figured out.
-    <<endgame lose>>
+    <<endgame lose BanditKingWon>>
 -> Drink <<if false>>
     Still needs figured out.
-    <<endgame lose>>
+    <<endgame lose BanditKingWon>>
 ===

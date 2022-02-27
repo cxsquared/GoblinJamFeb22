@@ -1,7 +1,6 @@
 package listeners;
 
 import event.DialogueHidden;
-import dialogue.event.DialogueComplete;
 import event.QuestFailed;
 import event.PickCity;
 import ecs.component.Renderable;

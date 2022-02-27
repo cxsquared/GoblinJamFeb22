@@ -212,10 +212,11 @@ class DialogueManager {
 		}
 
 		if (StringTools.startsWith(command.text, "endgame")) {
+			var parts = command.text.split(" ");
 			if (StringTools.contains(command.text, "lose")) {
-				eventBus.publishEvent(new GameEnd(false));
+				eventBus.publishEvent(new GameEnd(false, parts[2]));
 			} else {
-				eventBus.publishEvent(new GameEnd(true));
+				eventBus.publishEvent(new GameEnd(true, parts[2]));
 			}
 
 			resume();
