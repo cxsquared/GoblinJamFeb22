@@ -1,5 +1,6 @@
 package listeners;
 
+import event.DialogueHidden;
 import h2d.Interactive;
 import h2d.Flow;
 import assets.Assets;
@@ -170,6 +171,7 @@ class DialogueBoxController {
 		// Delay so we don't talk after finish
 		haxe.Timer.delay(function() {
 			isTalking = false;
+			eventBus.publishEvent(new DialogueHidden());
 		}, 50);
 	}
 

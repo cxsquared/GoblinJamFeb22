@@ -10,7 +10,7 @@ What do you do?
         <<cityfavor + 10>>
     <<else>>
         The bandit is too strong for you. You run away crying.
-        <<cityfavor - 10>>
+        <<cityfavor - 20>>
         <<health - 10>>
     <<endif>>
 -> [plural value={$Sprinting} one="Run" other="Run" two="Run" /]
@@ -20,7 +20,7 @@ What do you do?
         <<cityfavor + 5>>
     <<else>>
         You run away screaming.
-        <<cityfavor - 20>>
+        <<cityfavor - 40>>
     <<endif>>
 -> [plural value={$TrashTalking} one="Talk" other="Talk" two="Talk" /]
     <<if $TrashTalking > 1>>
@@ -36,6 +36,7 @@ What do you do?
     You hide behind a tree.
     The bandit then proceeds to rob multiple people.
     <<cityfavor - 10>>
+    <<failquest>>
 -> [plural value={$Drunking} one="Drink" other="Drink" two="Drink" /]
     You offer a drink to the bandit which they gladly accepts.
     <<if $Drunking > 0>>
@@ -48,6 +49,7 @@ What do you do?
         <<banditfavor + 10>>
         <<cityfavor - 5>>
     <<endif>>
+    <<failquest>>
 ===
 title: Granny 
 tags: random
@@ -60,10 +62,11 @@ What do you do?
     Everything goes black and you wake up in a nearby town.
     <<health - 10>>
     <<totown>>
+    <<failquest>>
 -> Run
     You can't help but feel that the lady was out of place.
     You decide to run away.
-    <<cityfavor - 10>>    
+    <<cityfavor - 20>>    
 -> Talk 
     You talk to the lady and she tells you about her family.
     There's no chance this grandma is up to no good.
@@ -81,6 +84,7 @@ What do you do?
         All of a sudden you are hit from behind.
         When you wake up all your belongings have been taken.
         <<money - 50>>
+        <<failquest>>
     <<endif>>
 -> [plural value={$Herbology} one="Drink" other="Drink" two="Drink" /]
     You approach the lady and ask if she plans on making tea with the flowers she is picking.
@@ -98,6 +102,7 @@ What do you do?
         You pass out and wake up with all your goods taken.
         <<health - 5>>
         <<money - 50>>
-        <<cityfavor - 5>>
+        <<cityfavor - 15>>
     <<endif>>
+    <<failquest>>
 ===

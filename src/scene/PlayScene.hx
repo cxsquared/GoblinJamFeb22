@@ -1,12 +1,12 @@
 package scene;
 
+import listeners.QuestController;
 import hxd.Math;
 import event.PickCity;
 import ui.RandomSkill;
 import ecs.utils.MathUtils;
 import constant.Skill;
 import event.GainSkill;
-import ecs.component.Ui;
 import event.QuestCompleted;
 import event.NewQuest;
 import event.EnteredCity;
@@ -55,35 +55,25 @@ import ecs.scene.GameScene;
 import dialogue.DialogueManager;
 
 class PlayScene extends GameScene {
-	var world:World;
+	public var world:World;
+	public var eventBus:EventBus;
+	public var dialogueManager:DialogueManager;
+	public var cities = new Array<Entity>();
+	public var encounterCities = new Array<CityName>();
+
 	var layers:Layers;
-	var eventBus:EventBus;
 	var levels:assets.World;
 	var player:Entity;
 	var camera:Entity;
-	var dialogueManager:DialogueManager;
 	var dialogueBox:DialogueBoxController;
-	var cities = new Array<Entity>();
-	var encounterCities = new Array<CityName>();
+	var questController:QuestController;
 	var randomEncounters = new Array<String>();
 	var storyStarts = new Array<String>();
 	var storyMids = new Array<String>();
 	var storyEnds = new Array<String>();
-	var defaultQuestCompleted = new Array<String>();
-	var questStart = new Array<String>();
-	var questEndNode = "";
-	var nextTargetCity:Entity;
 	var encounterStage = EncounterStage.StoryStart;
-	var currentCity:City;
-	var currentQuestTarget:City;
-	var availableQuestTarget:City;
-	var questIcon:Entity;
-	var welcomed = false;
 	var availableSkills:Array<Skill>;
 	var randomSkill:RandomSkill;
-	var questTime = 5.0;
-	var timeTillNextQuest = 5.0;
-	var gettingQuest = false;
 
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
@@ -97,8 +87,7 @@ class PlayScene extends GameScene {
 
 		randomEncounters = dialogueManager.getNodeNames("random");
 		storyStarts = dialogueManager.getNodeNames("storyStart");
-		defaultQuestCompleted = dialogueManager.getNodeNames("defaultQuestCompleted");
-		questStart = dialogueManager.getNodeNames("questStart");
+		storyEnds = dialogueManager.getNodeNames("storyEnd");
 
 		availableSkills = Skill.all();
 	}
@@ -169,22 +158,16 @@ class PlayScene extends GameScene {
 					encounterStage = EncounterStage.Random;
 				case StoryMiddle:
 				case StoryEnd:
+					hxd.Math.shuffle(storyEnds);
+					dialogueManager.runNode(storyEnds[0]);
 				case _:
 					hxd.Math.shuffle(randomEncounters);
 					var encounter = randomEncounters.pop();
 					dialogueManager.runNode(encounter);
 					if (randomEncounters.length == 0) {
 						encounterStage = EncounterStage.StoryEnd;
-					} else {
-						encounterStage = EncounterStage.StoryMiddle;
 					}
 			}
-		});
-
-		eventBus.subscribe(PickCity, function(e) {
-			nextTargetCity = getQuestCity();
-
-			dialogueManager.storage.setValue("$targetCity", nextTargetCity.get(City).name.getName());
 		});
 
 		eventBus.subscribe(CityFavorChange, function(e) {
@@ -218,98 +201,6 @@ class PlayScene extends GameScene {
 			var pv = player.get(Velocity);
 			pv.dx = 0;
 			pv.dy = 0;
-		});
-
-		eventBus.subscribe(EnteredCity, function(e) {
-			currentCity = e.city;
-			dialogueManager.storage.setValue("$currentCity", currentCity.name.getName());
-
-			if (currentCity == currentQuestTarget) {
-				cleanupQuest();
-
-				if (!welcomed) {
-					welcomed = true;
-					dialogueManager.runNode("Welcome");
-					return;
-				}
-
-				eventBus.publishEvent(new QuestCompleted());
-				return;
-			}
-
-			if (currentCity == availableQuestTarget) {
-				gettingQuest = true;
-				cleanupQuest();
-				Math.shuffle(questStart);
-				dialogueManager.runNode(questStart[0]);
-				return;
-			}
-		});
-
-		eventBus.subscribe(QuestCompleted, function(e) {
-			timeTillNextQuest = questTime;
-			var nodeToRun = dialogueManager.storage.getValue("$questComplete");
-			if (nodeToRun != null && nodeToRun.type != null && nodeToRun.asString() != "") {
-				dialogueManager.runNode(nodeToRun.asString());
-				return;
-			}
-
-			hxd.Math.shuffle(defaultQuestCompleted);
-			dialogueManager.runNode(defaultQuestCompleted[0]);
-		});
-
-		eventBus.subscribe(NewQuest, function(e) {
-			gettingQuest = false;
-			if (currentQuestTarget != null) {
-				currentQuestTarget.favor = Math.floor(Math.max(0, currentQuestTarget.favor - 10));
-				currentQuestTarget.hasQuest = false;
-				currentQuestTarget = null;
-			}
-
-			if (questIcon == null)
-				setupQuestIcon();
-
-			var icon = questIcon.get(Renderable).drawable;
-			var questT = questIcon.get(Transform);
-			icon.visible = true;
-			if (e.nearset && encounterCities.length > 0) {
-				hxd.Math.shuffle(encounterCities);
-				var target = getCityByName(encounterCities[0]);
-				var tt = target.get(Transform);
-				currentQuestTarget = target.get(City);
-				currentQuestTarget.hasQuest = true;
-				questT.x = tt.x;
-				questT.y = tt.y;
-				return;
-			}
-
-			if (e.target != null) {
-				var target = getCityByName(e.target);
-				var tt = target.get(Transform);
-				currentQuestTarget = target.get(City);
-				currentQuestTarget.hasQuest = true;
-				questT.x = tt.x;
-				questT.y = tt.y;
-				return;
-			}
-
-			if (nextTargetCity != null) {
-				var target = nextTargetCity;
-				var tt = target.get(Transform);
-				currentQuestTarget = target.get(City);
-				currentQuestTarget.hasQuest = true;
-				questT.x = tt.x;
-				questT.y = tt.y;
-				nextTargetCity = null;
-				return;
-			}
-
-			var target = getQuestCity();
-			var tt = target.get(Transform);
-			currentQuestTarget = target.get(City);
-			currentQuestTarget.hasQuest = true;
-			questT.x = tt.x;
-			questT.y = tt.y;
 		});
 
 		eventBus.subscribe(GainSkill, function(e) {
@@ -365,38 +256,15 @@ class PlayScene extends GameScene {
 			dialogueManager.storage.setValue("$" + name.getName(), level.getIndex());
 		});
 
+		var questIcon = setupQuestIcon();
+		questController = new QuestController(this, questIcon);
+
 		var uiParent = new Object();
 		layers.add(uiParent, Const.UiLayerIndex);
 		dialogueBox = new DialogueBoxController(eventBus, world, uiParent);
 	}
 
-	function cleanupQuest() {
-		currentQuestTarget = null;
-		availableQuestTarget = null;
-
-		if (questIcon != null) {
-			questIcon.get(Renderable).drawable.visible = false;
-		}
-	}
-
-	function getQuestCity():Entity {
-		var validCities = cities.filter(function(c) {
-			var city = c.get(City);
-			if (city.favor <= 0)
-				return false;
-
-			if (currentCity != null && city.name.getName() == currentCity.name.getName())
-				return false;
-
-			return true;
-		});
-
-		hxd.Math.shuffle(validCities);
-
-		return validCities[0];
-	}
-
-	function getCityByName(name:CityName) {
+	public function getCityByName(name:CityName) {
 		for (city in cities) {
 			var c = city.get(City);
 			if (c.name == name) {
@@ -414,26 +282,7 @@ class PlayScene extends GameScene {
 			return;
 
 		world.update(dt);
-
-		if (availableQuestTarget == null && currentQuestTarget == null && welcomed && !gettingQuest) {
-			timeTillNextQuest -= dt;
-			if (timeTillNextQuest < 0) {
-				if (questIcon == null)
-					setupQuestIcon();
-
-				var icon = questIcon.get(Renderable).drawable;
-				var questT = questIcon.get(Transform);
-				icon.visible = true;
-
-				var target = getQuestCity();
-				var tt = target.get(Transform);
-				availableQuestTarget = target.get(City);
-				questT.x = tt.x;
-				questT.y = tt.y;
-				nextTargetCity = null;
-				return;
-			}
-		}
+		questController.update(dt);
 	}
 
 	function setupQuestIcon() {
@@ -441,7 +290,7 @@ class PlayScene extends GameScene {
 		var questIconBitmap = new Bitmap(questIconTile);
 		questIconBitmap.visible = false;
 		layers.add(questIconBitmap, Const.UiLayerIndex);
-		questIcon = world.addEntity("quest").add(new Transform(0, 0, 16, 16)).add(new Renderable(questIconBitmap));
+		return world.addEntity("quest").add(new Transform(0, 0, 16, 16)).add(new Renderable(questIconBitmap));
 	}
 
 	function setupLevel(level:assets.World.World_Level) {
@@ -524,7 +373,7 @@ class PlayScene extends GameScene {
 	}
 
 	function createFire(x:Float, y:Float) {
-		var fireTile = hxd.Res.sprites.map_sheet.toTile().sub(19 * 32, 15 * 32, 63, 32);
+		var fireTile = hxd.Res.sprites.map_sheet.toTile().sub(14 * 32, 19 * 32, 63, 32);
 		var fireBitmap = new Bitmap(fireTile);
 		layers.add(fireBitmap, Const.EnityLayerIndex);
 

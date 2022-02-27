@@ -62,10 +62,13 @@ class Collision implements IAllEntitySystems {
 						ac.justEntered = false;
 						bc.justEntered = false;
 					}
+
 					ac.justExited = false;
-					bc.colliding = true;
+					bc.justExited = false;
+
 					ac.colliding = true;
 					bc.colliding = true;
+
 					ac.event = aevent;
 					bc.event = bevent;
 					break;

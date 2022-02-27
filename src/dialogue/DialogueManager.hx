@@ -1,9 +1,10 @@
 package dialogue;
 
+import event.QuestFailed;
+import event.GameEnd;
 import event.PickCity;
 import event.GainSkill;
 import event.NewQuest;
-import event.QuestCompleted;
 import event.TeleportToNearByTown;
 import event.BanditFavorChange;
 import event.MoneyChange;
@@ -206,6 +207,23 @@ class DialogueManager {
 
 		if (command.text == "pickcity") {
 			eventBus.publishEvent(new PickCity());
+			resume();
+			return;
+		}
+
+		if (StringTools.startsWith(command.text, "endgame")) {
+			if (StringTools.contains(command.text, "lose")) {
+				eventBus.publishEvent(new GameEnd(false));
+			} else {
+				eventBus.publishEvent(new GameEnd(true));
+			}
+
+			resume();
+			return;
+		}
+
+		if (command.text == "failquest") {
+			eventBus.publishEvent(new QuestFailed());
 			resume();
 			return;
 		}

@@ -29,3 +29,9 @@ City Guard: Thanks for helping use out!
 City Guard: Here's a little something for your time.
 <<skill random>>
 ===
+title: Quest Failed 1
+tags: questFailed
+---
+While you were out having fun, bandits attacked {$targetCity}.
+You have failed your current quest.
+===
