@@ -9,7 +9,7 @@ What do you do?
         You let it rip straight into the bandit's throat.
         Blood spirts out as the sharp edges of the Beyblade cut the skin.
         Congrats! You have saved the lands.
-        <<endgame win banditkingdefeated>>
+        <<endgame win BanditKingDefeated>>
     <<elseif $SwordFighting > 0>>
         You both draw your blades and prepare to fight.
         You exchange blows but your sword skill wins out.

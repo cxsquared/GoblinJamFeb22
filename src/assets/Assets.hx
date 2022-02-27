@@ -6,14 +6,15 @@ import ecs.event.EventBus;
 
 class Assets {
 	public static var worldData:assets.World;
-	public static var dialogueManager:DialogueManager;
 	public static var font:h2d.Font;
 
 	static var _initDone = false;
 
 	public static function init(eventBus:EventBus) {
-		if (_initDone)
+		if (_initDone) {
 			return;
+		}
+
 		_initDone = true;
 
 		worldData = new assets.World();
@@ -29,44 +30,6 @@ class Assets {
 					eventBus.publishEvent(new WorldReloaded());
 				}, 200);
 			});
-		#end
-
-		dialogueManager = new DialogueManager(eventBus);
-
-		var yarnText = [
-			hxd.Res.text.encounters.entry.getText(),
-			hxd.Res.text.skills.entry.getText(),
-			hxd.Res.text.storyStart.entry.getText(),
-			hxd.Res.text.storyEnd.entry.getText(),
-			hxd.Res.text.quests.entry.getText(),
-			hxd.Res.text.gameOver.entry.getText(),
-		];
-		var yarnFileNames = [
-			hxd.Res.text.encounters.entry.name,
-			hxd.Res.text.skills.entry.name,
-			hxd.Res.text.storyStart.entry.name,
-			hxd.Res.text.storyEnd.entry.name,
-			hxd.Res.text.quests.entry.name,
-			hxd.Res.text.gameOver.entry.name,
-		];
-		dialogueManager.load(yarnText, yarnFileNames);
-
-		#if debug
-		hxd.Res.text.encounters.watch(function() {
-			dialogueManager.stop();
-			dialogueManager.unload();
-			dialogueManager.load(yarnText, yarnFileNames);
-		});
-		hxd.Res.text.skills.watch(function() {
-			dialogueManager.stop();
-			dialogueManager.unload();
-			dialogueManager.load(yarnText, yarnFileNames);
-		});
-		hxd.Res.text.storyStart.watch(function() {
-			dialogueManager.stop();
-			dialogueManager.unload();
-			dialogueManager.load(yarnText, yarnFileNames);
-		});
 		#end
 
 		font = hxd.Res.font.pixel_unicode.Pixel_UniCode_fnt.toFont();

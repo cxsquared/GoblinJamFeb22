@@ -30,13 +30,12 @@ import dialogue.event.OptionsShown.OptionChoice;
 
 class DialogueManager {
 	public var storage = new MemoryVariableStore();
+	public var eventBus:EventBus;
 
 	var dialogue:Dialogue;
 	var stringTable:Map<String, StringInfo>;
 	var lastNodeName:String;
 	var runningDialouge:Bool = false;
-
-	var eventBus:EventBus;
 
 	public var waitingForOption:Bool = false;
 

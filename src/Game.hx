@@ -56,8 +56,9 @@ class Game extends hxd.App {
 	public function setGameScene(gs:GameScene) {
 		console.resetCommands();
 		if (scene != null) {
-			s2d.removeChild(scene); // This might not actually clean anything up aka memory leak
-			layer.removeChild(scene); // This might not actually clean anything up aka memory leak
+			scene.remove();
+			// s2d.removeChild(scene); // This might not actually clean anything up aka memory leak
+			// layer.removeChild(scene); // This might not actually clean anything up aka memory leak
 		}
 
 		scene = gs;

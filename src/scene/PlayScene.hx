@@ -93,13 +93,36 @@ class PlayScene extends GameScene {
 		Assets.init(eventBus);
 
 		levels = Assets.worldData;
-		dialogueManager = Assets.dialogueManager;
+
+		loadDialogue();
+
+		availableSkills = Skill.all();
+	}
+
+	function loadDialogue() {
+		dialogueManager = new DialogueManager(eventBus);
+
+		var yarnText = [
+			hxd.Res.text.encounters.entry.getText(),
+			hxd.Res.text.skills.entry.getText(),
+			hxd.Res.text.storyStart.entry.getText(),
+			hxd.Res.text.storyEnd.entry.getText(),
+			hxd.Res.text.quests.entry.getText(),
+			hxd.Res.text.gameOver.entry.getText(),
+		];
+		var yarnFileNames = [
+			hxd.Res.text.encounters.entry.name,
+			hxd.Res.text.skills.entry.name,
+			hxd.Res.text.storyStart.entry.name,
+			hxd.Res.text.storyEnd.entry.name,
+			hxd.Res.text.quests.entry.name,
+			hxd.Res.text.gameOver.entry.name,
+		];
+		dialogueManager.load(yarnText, yarnFileNames);
 
 		randomEncounters = dialogueManager.getNodeNames("random");
 		storyStarts = dialogueManager.getNodeNames("storyStart");
 		storyEnds = dialogueManager.getNodeNames("storyEnd");
-
-		availableSkills = Skill.all();
 	}
 
 	public override function init():Void {
@@ -379,12 +402,15 @@ class PlayScene extends GameScene {
 		var bitmap = new Bitmap(tile);
 		layers.add(bitmap, Const.EnityLayerIndex);
 
+		var r = new Renderable(bitmap);
+		r.offsetX = 16;
+		r.offsetY = 16;
 		var player = world.addEntity("player")
 			.add(new Player())
 			.add(new Transform(playerStart.pixelX, playerStart.pixelY, playerSize, playerSize))
 			.add(new Velocity(0, 0))
 			.add(new Collidable(CollisionShape.BOUNDS, 0, playerSize, playerSize))
-			.add(new Renderable(bitmap));
+			.add(r);
 
 		return player;
 	}
