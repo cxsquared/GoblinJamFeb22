@@ -30,16 +30,16 @@ What do you do?
     <<endgame lose BanditKingWon>>
 -> [plural value={$ShakespeareanKnowledge} one="Talk" other="Talk" two="Talk" /]
     <<if $ShakespeareanKnowledge > 0>>
-        You begin to explain why the bandit's are evil in perfect iambic pentameter.
+        You begin to explain why the bandits are evil in perfect iambic pentameter.
         You go on and on and on and on...
-        You can see the bandit's eye's getting heavy.
+        You can see the bandit's eyes getting heavy.
         Finally the bandits all succumb to your Shakespearean Knowledge.
         Congrats! You have saved the lands.
         <<endgame win BanditKingDefeated>>
     <<else>>
-        You begin to explain why the bandit's are evil.
+        You begin to explain why the bandits are evil.
         Bandit King: Your words mean nothing here.
-        In one fell sweep he slices your head off.
+        In one fell swoop he slices your head off.
         The lands are doomed to be ruled by the bandits.
         <<endgame lose BanditKingWon>>
     <<endif>>
@@ -47,7 +47,7 @@ What do you do?
     <<if $Magic > 1>>
         You use magic to fill the room with a thick fog.
         Bandit King: Your magic tricks won't work on me.
-        As he says that you summon a dagger behind the bandit's back.
+        As he speaks you summon a dagger behind the bandit's back.
         The dagger plunges into it's target.
         The band it king falls to the ground.
         Congrats! You have saved the lands.
@@ -81,7 +81,7 @@ What do you do?
         You set down the glasses and attempt to give a toast.
         As you do the Bandit sneakily swaps the drinks.
         You both down your drinks in one gulp.
-        By the time you noticed the drinks where switched it's already to late.
+        By the time you noticed the drinks were switched it's already to late.
         The lands are doomed to be ruled by the bandits.
         <<endgame lose BanditKingWon>>
     <<endif>>
