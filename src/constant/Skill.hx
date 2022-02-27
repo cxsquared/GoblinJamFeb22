@@ -42,6 +42,12 @@ enum SkillName {
 	Sneak;
 	Sprinting;
 	Herbology;
+	AnimalPetting;
+	MooseKnowledge;
+	LuteShredding;
+	Programming;
+	Housekeeping;
+	Cooking;
 }
 
 enum SkillLevel {

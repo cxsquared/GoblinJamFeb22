@@ -1,4 +1,5 @@
 common.hxml
 
+-D windowTitle=Handelsroute
 -lib hldx 
 -hl bin/hl/hello.hl

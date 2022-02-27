@@ -1,3 +1,5 @@
+import scene.VictoryScene;
+import scene.DefeatScene;
 import hxd.res.Sound;
 import hxd.snd.Channel;
 import scene.MenuScene;
@@ -78,7 +80,7 @@ class Game extends hxd.App {
 
 		if (musicResource != null) {
 			// Play the music and loop it
-			music = musicResource.play(true);
+			music = musicResource.play(true, .9);
 		}
 	}
 

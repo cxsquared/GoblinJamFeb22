@@ -8,6 +8,17 @@ tags: ending
 ---
 The bandit king killed you.
 ===
+title: WizardDefeated
+tags: ending
+---
+Congrats you beat the Wizard!
+===
+title: WizardWon 
+tags: ending
+---
+Thanks to you, the Wizard has taken over the world!
+===
+
 title: FavorDefeat 
 tags: ending
 ---

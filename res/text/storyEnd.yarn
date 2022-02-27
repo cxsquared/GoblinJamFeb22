@@ -60,10 +60,9 @@ What do you do?
         He pushes you aside.
         As the king goes in for the kill you use the last bit of your power to create a fireball.
         It strikes the bandit king as he strikes you.
-        You've defeatd the Bandit King but at what cost.
+        You've defeated the Bandit King but at what cost.
         <<endgame win BanditKingDefeated>>
     <<endif>>
-    <<endgame lose BanditKingWon>>
 -> [plural value={$WaitingTables} one="Drink" other="Drink" two="Drink" /]
     <<if $WaitingTables > 0>>
         Instead of fighting. You offer a drink to the Bandit King.
@@ -85,4 +84,66 @@ What do you do?
         The lands are doomed to be ruled by the bandits.
         <<endgame lose BanditKingWon>>
     <<endif>>
+===
+title: Evil Wizard
+tags: storyEnd
+---
+**BANG**
+A blinding light fills your vision.
+When it fades you are standing in front of a large robbed figure.
+Evil Wizard: You've been meddling in my work for too long!
+Evil Wizard: I'm going to rule this land and you won't stop me!
+-> [plural value={$Programming} one="Fight" other="Fight" two="Fight" /]
+    You draw your sword and prepare to fight.
+    <<if $Programming > 0>>
+        But you notice a strange curtain behind the wizard.
+        You duck and roll behind it.
+        Inside there's a series of computers hooked up to each other.
+        You realize the wizard is actually a computer controller hologram.
+        With your l33t hacking skills you shut him down.
+        Congrats! You have saved the lands.
+        <<endgame win WizardDefeated>>
+    <<else>>
+        You charge at the wizard but he disappears.
+        He pops up behind you.
+        You try to turn around but it's too late.
+        He casts a fireball at you and you are burnt to a crisp.
+        <<endgame lose WizardWon>>
+    <<endif>>
+-> Run
+    You turn around to run away
+    But you realize you are trapped in a room with no doors.
+    Evil Wizard: Did you think you could just run away?
+    He casts a fireball at you and you are burnt to a crisp.
+    <<endgame lose WizardWon>>
+-> [plural value={$Magic} one="Talk" other="Talk" two="Talk" /]
+    Intrigued by his powers you ask some questions about magic with the wizard.
+    He tells you that he's been working on a new spell.  
+    <<if $Magic > 0>>
+        You point out a flaw in his magically thinking.
+        He's very grateful and offers you a role on his court.
+        He seems like a good guy so you accept.
+        The wizard has won... or has he?
+        <<endgame win WizardDefeated>>
+    <<else>>
+        You try to keep up with what he is saying but just can't
+        Evil Wizard: Are you even listening anymore?
+        He casts a fireball at you and you are burnt to a crisp.
+        <<endgame lose WizardWon>>
+    <<endif>>
+-> Hide 
+    You look around the room for a place to hide.
+    But you can't seen anything.
+    The room is completely empty.
+    Evil Wizard: There's no place for you to run!
+    He casts a fireball at you and you are burnt to a crisp.
+    <<endgame lose WizardWon>>
+-> Drink
+    You run up to the wizard and pull a potion off his belt.
+    You chug it down.
+    ** POOF **
+    You become a llama.
+    Evil Wizard: See, that's why you shouldn't go around drinking random things. 
+    He casts a fireball at you and you are burnt to a crisp.
+    <<endgame lose WizardWon>>
 ===

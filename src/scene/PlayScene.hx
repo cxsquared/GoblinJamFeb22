@@ -202,7 +202,7 @@ class PlayScene extends GameScene {
 					hxd.Math.shuffle(randomEncounters);
 					var encounter = randomEncounters.pop();
 					dialogueManager.runNode(encounter);
-					if (randomEncounters.length == 0) {
+					if (randomEncounters.length <= 0) {
 						encounterStage = EncounterStage.StoryEnd;
 					}
 			}
@@ -313,8 +313,10 @@ class PlayScene extends GameScene {
 						return s.level != SkillLevel.Advanced;
 					});
 
-					hxd.Math.shuffle(validUpgrades);
-					skills.push(validUpgrades[0]);
+					if (validUpgrades.length > 0) {
+						hxd.Math.shuffle(validUpgrades);
+						skills.push(validUpgrades[0]);
+					}
 				}
 
 				hxd.Math.shuffle(availableSkills);

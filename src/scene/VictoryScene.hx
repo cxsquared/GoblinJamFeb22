@@ -1,5 +1,6 @@
 package scene;
 
+import h2d.Bitmap;
 import ecs.event.ChangeSceneEvent;
 import hxd.Key;
 import h2d.Console;
@@ -15,8 +16,14 @@ class VictoryScene extends GameScene {
 	}
 
 	public override function init():Void {
+		var s2d = getScene();
+		new Bitmap(hxd.Res.images.victory.toTile(), this);
 		var t = new Text(Assets.font, this);
-		t.text = "You won!\nPress space to try again";
+		t.textColor = 0x000000;
+		t.text = "V I C T O R Y\nPress space to try again";
+		t.textAlign = Align.MultilineCenter;
+		t.y = 100;
+		t.x = s2d.width / 2 - t.getSize().width / 2;
 	}
 
 	public override function update(dt:Float):Void {

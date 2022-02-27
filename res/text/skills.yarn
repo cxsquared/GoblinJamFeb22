@@ -14,4 +14,10 @@ title:Skills
 <<declare $Sneak = 0>> // Used
 <<declare $Sprinting = 0>> // Used
 <<declare $Herbology= 0>> // Used
+<<declare $AnimalPetting = 0>> // Used
+<<declare $MooseKnowledge = 0>>
+<<declare $LuteShredding = 0>> 
+<<declare $Programming = 0>>  // Used
+<<declare $Housekeeping = 0>> 
+<<declare $Cooking = 0>> 
 ===

@@ -76,7 +76,7 @@ What do you do?
         As you wait you hear footsteps coming up behind you.
         You turn around and see a bandit approaching.
         You manage to beat him in combat.
-        When you look back the old lady has dissapeared.
+        When you look back the old lady has disappeared.
         Interesting...
         <<cityfavor + 25>>
     <<else>>
@@ -214,4 +214,73 @@ You see a person in green clothing and a sword looking under heavy rocks.
     <<health - 20>>
     <<failquest>>
     <<totown>>
+===
+title: Kitten 
+tags: random
+---
+A tiny kitten is sitting on a rock off the side of the road.
+-> [plural value={$AnimalPetting} one="Fight" other="Fight" two="Fight" /]
+    <<if $AnimalPetting > 0>>
+        You run up and start play fighting with the kitten.
+        It loves it and you've made a new friend.
+        <<cityfavor + 10>>
+    <<else>>
+        You monster! How could you...    
+        <<cityfavor - 50>>
+    <<endif>>
+-> Run 
+    You attempt to get the kitten to chase you but it isn't interested.
+    :(
+-> Talk 
+    You **meow** at the kitten.
+    It gives you a quizzical look back.
+    I guess it's not interested
+-> Hide 
+    You creep up behind the rock.
+    You jump out and scare the kitten.
+    It runs off into the forest.
+    <<cityfavor - 5>>
+-> Drink 
+    You poor out some milk for the kitten.
+    It loves it!
+    <<cityfavor + 10>>
+===
+title: Merchant 
+tags: random
+---
+A traveling merchant seems to have broken down by the road.
+-> Fight 
+    You take advantage of the situation and punch him from behind.
+    You take his money and leave.
+    <<cityfavor - 25>>
+    <<money + 50>>
+-> Run 
+    The merchant tries to get your attention.
+    But you sprint away.
+    <<cityfavor - 15>>
+-> Talk 
+    You chat with him to keep him company before help arrives.
+    He appreciates your company and gives you a small tip.
+    <<money + 5>>
+    <<cityfavor + 5>>
+    <<failquest>>
+-> Hide 
+    You keep watch in a bush.
+    You see a group of bandits come up and try to rob the merchant.
+    Because of your hiding spot, you get the jump on them.
+    You defeat the bandits and go on your way.
+    <<cityfavor + 5>>
+-> [plural value={$Drunking} one="Drink" other="Drink" two="Drink" /]
+    You decide to have a drink with the merchant till help arrives.
+    <<if $Drunking > 0>>
+        But you take it a little too far.
+        You both pass out.
+        When you wake up the merchant's goods are gone.
+        <<cityfavor - 10>>
+        <<failquest>>
+    <<else>>
+        After a little while the cart repairer arrives.
+        The merchant appreciates your company.
+        <<cityfavor + 5>>
+    <<endif>>
 ===
