@@ -1,3 +1,5 @@
+import hxd.res.Sound;
+import hxd.snd.Channel;
 import scene.MenuScene;
 import ecs.event.ChangeSceneEvent;
 import ecs.event.EventBus;
@@ -21,6 +23,7 @@ class Game extends hxd.App {
 
 	public static var globalEventBus:EventBus;
 	public static var game:Game;
+	public static var music:Channel;
 
 	public function new() {
 		super();
@@ -58,6 +61,25 @@ class Game extends hxd.App {
 		#else
 		setGameScene(new MenuScene(s2d, console));
 		#end
+
+		// If your audio file is named 'my_music.mp3'
+
+		var musicResource:Sound = null;
+		// If we support mp3 we have our sound
+		if (hxd.res.Sound.supportedFormat(OggVorbis)) {
+			#if hl
+			musicResource = hxd.Res.music_ogg;
+			#end
+		} else if (hxd.res.Sound.supportedFormat(Mp3)) {
+			#if js
+			musicResource = hxd.Res.music_mp3;
+			#end
+		}
+
+		if (musicResource != null) {
+			// Play the music and loop it
+			music = musicResource.play(true);
+		}
 	}
 
 	public function onChangeScene(event:ChangeSceneEvent) {
