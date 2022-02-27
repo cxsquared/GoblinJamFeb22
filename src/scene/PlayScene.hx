@@ -362,7 +362,9 @@ class PlayScene extends GameScene {
 	function setupPlayer(playerStart:assets.World.Entity_PlayerStart):Entity {
 		var playerSize = Const.TileSize;
 
-		var bitmap = new Bitmap(Tile.fromColor(0xFF0000, playerSize, playerSize));
+		var tile = hxd.Res.sprites.horse.toTile().sub(32, 0, 32, 32);
+		tile.setCenterRatio();
+		var bitmap = new Bitmap(tile);
 		layers.add(bitmap, Const.EnityLayerIndex);
 
 		var player = world.addEntity("player")

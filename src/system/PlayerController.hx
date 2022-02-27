@@ -1,5 +1,6 @@
 package system;
 
+import hxd.Timer;
 import hxd.Key;
 import hxd.Math;
 import ecs.Entity;
@@ -40,5 +41,13 @@ class PlayerController implements IPerEntitySystem {
 
 		t.x += v.dx * dt;
 		t.y += v.dy * dt;
+
+		if (Math.abs(v.dx) + Math.abs(v.dy) > 16) {
+			t.rotation = Math.sin(Timer.frameCount * .1) * .25;
+		} else {
+			v.dy = 0;
+			v.dx = 0;
+			t.rotation = 0;
+		}
 	}
 }
