@@ -74,7 +74,7 @@ class QuestController {
 				var target = getQuestCity();
 				var tt = target.get(Transform);
 				availableQuestTarget = target.get(City);
-				questT.x = tt.x;
+				questT.x = tt.x + tt.width / 2 - questT.width;
 				questT.y = tt.y;
 				nextTargetCity = null;
 				return;
@@ -147,7 +147,7 @@ class QuestController {
 			var tt = target.get(Transform);
 			currentQuestTarget = target.get(City);
 			currentQuestTarget.hasQuest = true;
-			questT.x = tt.x;
+			questT.x = tt.x + tt.width / 2 - questT.width;
 			questT.y = tt.y;
 			return;
 		}
@@ -157,7 +157,7 @@ class QuestController {
 			var tt = target.get(Transform);
 			currentQuestTarget = target.get(City);
 			currentQuestTarget.hasQuest = true;
-			questT.x = tt.x;
+			questT.x = tt.x + tt.width / 2 - questT.width;
 			questT.y = tt.y;
 			return;
 		}
@@ -167,7 +167,7 @@ class QuestController {
 			var tt = target.get(Transform);
 			currentQuestTarget = target.get(City);
 			currentQuestTarget.hasQuest = true;
-			questT.x = tt.x;
+			questT.x = tt.x + tt.width / 2 - questT.width;
 			questT.y = tt.y;
 			nextTargetCity = null;
 			return;
@@ -177,7 +177,7 @@ class QuestController {
 		var tt = target.get(Transform);
 		currentQuestTarget = target.get(City);
 		currentQuestTarget.hasQuest = true;
-		questT.x = tt.x;
+		questT.x = tt.x + tt.width / 2 - questT.width;
 		questT.y = tt.y;
 	}
 

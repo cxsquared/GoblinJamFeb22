@@ -1,5 +1,8 @@
 package scene;
 
+import component.Pulse;
+import system.PulseController;
+import event.QuestFailed;
 import ecs.event.ChangeSceneEvent;
 import event.DialogueHidden;
 import event.GameEnd;
@@ -144,6 +147,7 @@ class PlayScene extends GameScene {
 		world.addSystem(new LevelCollisionController(level.l_Collision));
 		world.addSystem(new Collision());
 		world.addSystem(new EncounterController(eventBus));
+		world.addSystem(new PulseController());
 		world.addSystem(new UiBarController());
 		world.addSystem(new Renderer(camera));
 
@@ -323,10 +327,15 @@ class PlayScene extends GameScene {
 
 	function setupQuestIcon() {
 		var questIconTile = hxd.Res.sprites.Menu_icons_16x16.toTile().sub(0, 9 * 16, 16, 16);
+		questIconTile.setCenterRatio();
 		var questIconBitmap = new Bitmap(questIconTile);
+		questIconBitmap.setScale(2);
 		questIconBitmap.visible = false;
 		layers.add(questIconBitmap, Const.UiLayerIndex);
-		return world.addEntity("quest").add(new Transform(0, 0, 16, 16)).add(new Renderable(questIconBitmap));
+		return world.addEntity("quest")
+			.add(new Transform(0, 0, 32, 32))
+			.add(new Renderable(questIconBitmap))
+			.add(new Pulse(.15, .75));
 	}
 
 	function setupLevel(level:assets.World.World_Level) {
