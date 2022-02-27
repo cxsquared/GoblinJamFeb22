@@ -160,7 +160,7 @@ class DialogueBoxController {
 				text.setPosition(8, 8);
 				var pluralAttribute = option.markup.tryGetAttributeWithName("plural");
 				if (pluralAttribute != null && pluralAttribute.properties[0].value.integerValue > 0) {
-					text.text = '<font color="#ffff00">${option.text}</font>';
+					text.text = '<font color="#00FF00">*${option.text}*</font>';
 				} else {
 					text.text = option.text;
 				}

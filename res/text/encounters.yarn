@@ -36,7 +36,6 @@ What do you do?
     You hide behind a tree.
     The bandit then proceeds to rob multiple people.
     <<cityfavor - 10>>
-    <<failquest>>
 -> [plural value={$Drunking} one="Drink" other="Drink" two="Drink" /]
     You offer a drink to the bandit which they gladly accepts.
     <<if $Drunking > 0>>
@@ -146,7 +145,6 @@ Bandit Thug: Pay up!
     Now that you are best buds, they let you pass with no toll.
     <<banditfavor + 10>>
     <<cityfavor - 20>>    
-    <<failquest>>
 -> [plural value={$Magic} one="Hide" other="Hide" two="Hide" /]
     <<if $Magic > 0>>
         You create a magical cloak over yourself.
@@ -197,7 +195,6 @@ You see a person in green cloathing and a sword looking under heavy rocks.
     You talk with the bandit and commiserate about how you're a hero as well!
     <<banditfavor + 10>>
     <<cityfavor - 20>>    
-    <<failquest>>
 -> [plural value={$Magic} one="Hide" other="Hide" two="Hide" /]
     <<if $Magic > 0>>
         You ask the bandit for a dollar and "magically" turn it into a seed!
