@@ -325,6 +325,8 @@ class PlayScene extends GameScene {
 		var uiParent = new Object();
 		layers.add(uiParent, Const.UiLayerIndex);
 		dialogueBox = new DialogueBoxController(eventBus, world, uiParent);
+
+		dialogueManager.runNode("Tutorial");
 	}
 
 	public function getCityByName(name:CityName) {
