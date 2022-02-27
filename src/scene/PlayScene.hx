@@ -1,5 +1,8 @@
 package scene;
 
+import event.BanditFavorChange;
+import event.HealthChange;
+import event.MoneyChange;
 import component.Pulse;
 import system.PulseController;
 import event.QuestFailed;
@@ -223,6 +226,39 @@ class PlayScene extends GameScene {
 
 			if (totalFavor / 5 <= 50) {
 				eventBus.publishEvent(new GameEnd(false, "FavorDefeat"));
+			}
+		});
+
+		eventBus.subscribe(MoneyChange, function(e) {
+			var p = player.get(Player);
+			p.money += e.amount;
+			if (p.money < 0)
+				p.money = 0;
+
+			if (p.money >= 100) {
+				eventBus.publishEvent(new GameEnd(false, "MoneyDefeat"));
+			}
+		});
+
+		eventBus.subscribe(HealthChange, function(e) {
+			var p = player.get(Player);
+			p.health += e.amount;
+			if (p.health > 100)
+				p.health = 100;
+
+			if (p.health <= 100) {
+				eventBus.publishEvent(new GameEnd(false, "HealthDefeat"));
+			}
+		});
+
+		eventBus.subscribe(BanditFavorChange, function(e) {
+			var p = player.get(Player);
+			p.banditFavor += e.amount;
+			if (p.banditFavor < 0)
+				p.banditFavor = 0;
+
+			if (p.banditFavor >= 100) {
+				eventBus.publishEvent(new GameEnd(false, "BanditFavorDefeat"));
 			}
 		});
 
