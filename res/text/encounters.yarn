@@ -170,3 +170,51 @@ Bandit Thug: Pay up!
     <<failquest>>
     <<totown>>
 ===
+title: Green guy
+tags: random
+---
+You see a person in green cloathing and a sword looking under heavy rocks.
+-> [plural value={$SwordFighting} one="Fight" other="Fight" two="Fight" /]
+    <<if $SwordFighting > 0>>
+        You draw your sword and prepare to fight.
+        With your sword skills you easily defeat the bandit.
+        He said something about looking for Korok seeds? Strange.
+        <<cityfavor + 10>>
+    <<else>>
+        The bandit is too strong, too beefy for you. You run away crying.
+        <<cityfavor - 20>>
+        <<health - 10>>
+    <<endif>>
+-> [plural value={$Sprinting} one="Run" other="Run" two="Run" /]
+    <<if $Sprinting > 0>>
+        You slip by the bandit before he realizes what is happening, tripping him.
+        <<cityfavor + 5>>
+    <<else>>
+        You clumsily stumble away from the bandit.
+        <<cityfavor - 40>>
+    <<endif>>
+-> Talk 
+    You talk with the bandit and commiserate about how you're a hero as well!
+    <<banditfavor + 10>>
+    <<cityfavor - 20>>    
+    <<failquest>>
+-> [plural value={$Magic} one="Hide" other="Hide" two="Hide" /]
+    <<if $Magic > 0>>
+        You ask the bandit for a dollar and "magically" turn it into a seed!
+        Bandit in Green: A Korok Seed! THANKYOU SO MUCH!
+        <<cityfavor + 10>>
+        <<money + 20>>
+    <<else>>
+        You climb a tree and wait for the bandit in green to leave.
+        Hours later you awake, realizing you fell asleep in the tree... again.
+        <<cityfavor - 10>>
+        <<failquest>>
+    <<endif>>
+-> Drink 
+    Realizing how thirsty you are, you sit down and take a drink, and then another...
+    You Black out.
+    <<cityfavor - 10>>
+    <<health - 20>>
+    <<failquest>>
+    <<totown>>
+===
