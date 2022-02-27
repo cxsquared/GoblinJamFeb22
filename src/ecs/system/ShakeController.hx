@@ -2,9 +2,7 @@ package ecs.system;
 
 import hxd.Math;
 import ecs.component.Renderable;
-import ecs.utils.MathUtils;
 import ecs.component.Shake;
-import ecs.component.Transform;
 import ecs.Entity;
 import ecs.system.IPerEntitySystem;
 

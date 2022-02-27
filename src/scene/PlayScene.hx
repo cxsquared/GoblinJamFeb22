@@ -344,7 +344,12 @@ class PlayScene extends GameScene {
 		if (randomSkill != null)
 			randomSkill.update(dt);
 
-		if (dialogueBox.isTalking || console.isActive() || randomSkill != null)
+		#if debug
+		if (console.isActive())
+			return;
+		#end
+
+		if (dialogueBox.isTalking || randomSkill != null)
 			return;
 
 		world.update(dt);

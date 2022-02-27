@@ -1,3 +1,4 @@
+import scene.MenuScene;
 import ecs.event.ChangeSceneEvent;
 import ecs.event.EventBus;
 import scene.PlayScene;
@@ -28,6 +29,7 @@ class Game extends hxd.App {
 
 	override function init() {
 		s2d.scaleMode = ScaleMode.Fixed(800, 600, 1);
+
 		hxd.Res.initEmbed();
 
 		layer = new Layers(s2d);
@@ -46,7 +48,11 @@ class Game extends hxd.App {
 		globalEventBus = new EventBus(console);
 		globalEventBus.subscribe(ChangeSceneEvent, onChangeScene);
 
+		#if debug
 		setGameScene(new PlayScene(s2d, console));
+		#else
+		setGameScene(new MenuScene(s2d, console));
+		#end
 	}
 
 	public function onChangeScene(event:ChangeSceneEvent) {
@@ -54,7 +60,10 @@ class Game extends hxd.App {
 	}
 
 	public function setGameScene(gs:GameScene) {
+		#if debug
 		console.resetCommands();
+		#end
+
 		if (scene != null) {
 			scene.remove();
 			// s2d.removeChild(scene); // This might not actually clean anything up aka memory leak

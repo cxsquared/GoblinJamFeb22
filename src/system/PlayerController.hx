@@ -2,7 +2,6 @@ package system;
 
 import hxd.Timer;
 import hxd.Key;
-import hxd.Math;
 import ecs.Entity;
 import ecs.system.IPerEntitySystem;
 import ecs.component.Velocity;
@@ -36,8 +35,8 @@ class PlayerController implements IPerEntitySystem {
 		if (right)
 			v.dx += p.accel;
 
-		v.dx = Math.clamp(v.dx * v.friction, -p.maxSpeed, p.maxSpeed);
-		v.dy = Math.clamp(v.dy * v.friction, -p.maxSpeed, p.maxSpeed);
+		v.dx = hxd.Math.clamp(v.dx * v.friction, -p.maxSpeed, p.maxSpeed);
+		v.dy = hxd.Math.clamp(v.dy * v.friction, -p.maxSpeed, p.maxSpeed);
 
 		t.x += v.dx * dt;
 		t.y += v.dy * dt;
