@@ -14,3 +14,65 @@ tags: ending
 Having been shunned by the townspeople, you are forced to flee the village.
 With this disgrace you have now become the bandit's new leader.
 ===
+title: MoneyDefeat
+tags: ending
+---
+The greed has gone to your head.
+All your choices have gained you money and you realize money makes you happier.
+You decide to become a bandit to gain even more riches.
+===
+title: BanditFavorDefeat
+tags: ending
+---
+After getting to know the bandits...
+Maybe they aren't so bad.
+You decide to join their ranks.
+You help lead them and take over all the cities in the region.
+===
+title: HealthDefeat
+tags: ending
+---
+As you take your last breath your life flashes before you.
+You remember...
+<<if $SwordFighting > 0>>
+the awesome sword fighting you have learned,
+<<endif>>
+<<if $Swimming > 0>>
+the distances you learned to swim,
+<<endif>>
+<<if $BreakDancing > 0>>
+the sick moves you can now do,
+<<endif>>
+<<if $Beyblading > 0>>
+letting it rip with your friends,
+<<endif>>
+<<if $TrashTalking > 0>> 
+spitting made bars on your enemies,
+<<endif>>
+<<if $ShakespeareanKnowledge > 0>>
+reciting beautiful poetry,
+<<endif>>
+<<if $Magic > 0>>
+conjuring powerful spells,
+<<endif>>
+<<if $Drinking > 0>>
+having pints with your mates,
+<<endif>>
+<<if $Drunking > 0>>
+getting wasted with your mates,
+<<endif>>
+<<if $WaitingTables > 0>>
+earning some cash waiting tables,
+<<endif>>
+<<if $Sneak > 0>>
+sneaking around in the dark,
+<<endif>>
+<<if $Sprinting > 0>>
+running a marathon for the first time,
+<<endif>>
+<<if $Herbology> 0>>
+growing your own herbs,
+<<endif>>
+You've learned so much.
+Yet done so little.
+===

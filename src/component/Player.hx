@@ -9,6 +9,8 @@ class Player implements IComponent {
 	public var maxSpeed = 100;
 	public var skills = new Array<Skill>();
 	public var health = 100;
+	public var money = 0;
+	public var banditFavor = 0;
 
 	public function new() {}
 
