@@ -5,8 +5,8 @@ import h2d.Console;
 
 class Renderable implements IComponent {
 	public var drawable:Drawable;
-	public var offsetX:Float;
-	public var offsetY:Float;
+	public var offsetX:Float = 0;
+	public var offsetY:Float = 0;
 
 	// TODO: Maybe pass in a parent so that anims can get added correctly
 	// if we pass in null

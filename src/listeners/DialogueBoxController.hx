@@ -40,6 +40,7 @@ class DialogueBoxController {
 	var textState:DialogueBoxState;
 	var lineMarkup:MarkupParseResult;
 	var numberOfOptions:Int;
+	var spaceTocontinue:Text;
 
 	public function new(eventBus:EventBus, world:World, parent:Object) {
 		this.eventBus = eventBus;
@@ -78,6 +79,16 @@ class DialogueBoxController {
 		dialogueTextName.textAlign = Align.Center;
 		dialogueTextName.maxWidth = dialogueName.width;
 
+		spaceTocontinue = new Text(Assets.font, dialogueBackground);
+		spaceTocontinue.setScale(.75);
+		spaceTocontinue.text = "Press Space to Continue";
+		spaceTocontinue.setPosition(dialogueBackground.getSize().width
+			- spaceTocontinue.getSize().width
+			- 8,
+			dialogueBackground.getSize().height
+			- spaceTocontinue.getSize().height
+			- 8);
+
 		options = new Flow();
 		options.borderWidth = 8;
 		options.borderHeight = 8;
@@ -93,8 +104,8 @@ class DialogueBoxController {
 		eventBus.subscribe(DialogueComplete, this.dialogueFinished);
 	}
 
-
 	public function showLine(event:LineShown) {
+		spaceTocontinue.visible = true;
 		if (!textFlow.contains(dialogueText)) {
 			textFlow.addChild(dialogueText);
 			textFlow.removeChild(options);
@@ -111,7 +122,7 @@ class DialogueBoxController {
 
 		textState = DialogueBoxState.TypingText;
 
-  		dialogueBackground.visible = true;
+		dialogueBackground.visible = true;
 		if (dialogueTextName.text != "") {
 			dialogueName.visible = true;
 		} else {
@@ -120,6 +131,7 @@ class DialogueBoxController {
 	}
 
 	public function showOptions(event:OptionsShown) {
+		spaceTocontinue.visible = false;
 		dialogueName.visible = false;
 
 		options.removeChildren();
@@ -139,7 +151,7 @@ class DialogueBoxController {
 		}
 		calculatingText.remove();
 		width += 32;
- 		height += 16;
+		height += 16;
 
 		for (option in event.options) {
 			if (option.enabled) {
@@ -190,7 +202,7 @@ class DialogueBoxController {
 		if (isTalking && Key.isPressed(Key.SPACE)) {
 			if (textState == TypingText) {
 				dialogueText.text = applyTextAttributes(currentText);
-   				textState = DialogueBoxState.WaitingForContinue;
+				textState = DialogueBoxState.WaitingForContinue;
 			} else if (textState == WaitingForContinue) {
 				eventBus.publishEvent(new NextLine());
 			}

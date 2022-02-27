@@ -1,11 +1,10 @@
 package ecs.utils;
 
-import hxd.Rand;
+import hxd.Math;
 import h2d.col.Point;
 
 class MathUtils {
-	static var rand = new Rand(42);
-
+	// static var rand = new Rand(42);
 	public static function normalizeToOne(value:Float, min:Float, max:Float):Float {
 		return (value - min) / (max - min);
 	}
@@ -20,10 +19,7 @@ class MathUtils {
 	}
 
 	public static function roll(dice:Int, ?seed:Int):Int {
-		if (seed != null)
-			rand.init(seed);
-
-		return rand.random(dice) + 1;
+		return Math.floor(Math.random(dice)) + 1;
 	}
 
 	public static function getSign(value:Float):Int {

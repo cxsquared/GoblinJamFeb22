@@ -4,15 +4,15 @@ import ecs.utils.MathUtils;
 import h2d.Console;
 
 class Transform implements IComponent {
-	public var x(default, set):Float; // pixel position
-	public var y(default, set):Float; // pixel position
-	public var cx(default, null):Int; // grid position
-	public var cy(default, null):Int; // grid position
-	public var xr(default, null):Float; // sub-grid position ratio
-	public var yr(default, null):Float; // sub-grid position ratio
-	public var rotation:Float; // In radians
-	public var width:Float;
-	public var height:Float;
+	public var x(default, set):Float = 0; // pixel position
+	public var y(default, set):Float = 0; // pixel position
+	public var cx(default, null):Int = 0; // grid position
+	public var cy(default, null):Int = 0; // grid position
+	public var xr(default, null):Float = 0; // sub-grid position ratio
+	public var yr(default, null):Float = 0; // sub-grid position ratio
+	public var rotation:Float = 0; // In radians
+	public var width:Float = 0;
+	public var height:Float = 0;
 
 	public function new(?x:Float = 0, ?y:Float = 0, ?width:Float = 0, ?height:Float = 0) {
 		this.x = x;

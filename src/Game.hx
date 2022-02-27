@@ -30,7 +30,12 @@ class Game extends hxd.App {
 	override function init() {
 		s2d.scaleMode = ScaleMode.Fixed(800, 600, 1);
 
+		// Heaps resources
+		#if (hl && debug)
+		hxd.Res.initLocal();
+		#else
 		hxd.Res.initEmbed();
+		#end
 
 		layer = new Layers(s2d);
 

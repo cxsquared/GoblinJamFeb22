@@ -43,11 +43,46 @@ What do you do?
         The lands are doomed to be ruled by the bandits.
         <<endgame lose BanditKingWon>>
     <<endif>>
-    Bandit
--> Hide <<if false>>
-    Still needs figured out.
+-> [plural value={$Magic} one="Hide" other="Hide" two="Hide" /]
+    <<if $Magic > 1>>
+        You use magic to fill the room with a thick fog.
+        Bandit King: Your magic tricks won't work on me.
+        As he says that you summon a dagger behind the bandit's back.
+        The dagger plunges into it's target.
+        The band it king falls to the ground.
+        Congrats! You have saved the lands.
+        <<endgame win BanditKingDefeated>>
+    <<elseif $Magic > 0>>
+        You use magic to fill the room with a thick fog.
+        Bandit King: Your magic tricks won't work on me.
+        The Bandit King frantically spins in a circle and clears away the fog.
+        You charge at the Bandit.
+        He pushes you aside.
+        As the king goes in for the kill you use the last bit of your power to create a fireball.
+        It strikes the bandit king as he strikes you.
+        You've defeatd the Bandit King but at what cost.
+        <<endgame win BanditKingDefeated>>
+    <<endif>>
     <<endgame lose BanditKingWon>>
--> Drink <<if false>>
-    Still needs figured out.
-    <<endgame lose BanditKingWon>>
+-> [plural value={$WaitingTables} one="Drink" other="Drink" two="Drink" /]
+    <<if $WaitingTables > 0>>
+        Instead of fighting. You offer a drink to the Bandit King.
+        He gladly accepts.
+        With your quick hands from your table waiting skills you slip some poison into the King's drink.
+        He doesn't notice a thing.
+        He gives a toast and downs his drink in one gulp.
+        In seconds he falls over dead.
+        Congrats! You have saved the lands.
+        <<endgame win BanditKingDefeated>>
+    <<else>>
+        Instead of fighting. You offer a drink to the Bandit King.
+        He gladly accepts.
+        You slip some poison into his drink.
+        You set down the glasses and attempt to give a toast.
+        As you do the Bandit sneakily swaps the drinks.
+        You both down your drinks in one gulp.
+        By the time you noticed the drinks where switched it's already to late.
+        The lands are doomed to be ruled by the bandits.
+        <<endgame lose BanditKingWon>>
+    <<endif>>
 ===
