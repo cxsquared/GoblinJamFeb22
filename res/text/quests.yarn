@@ -12,6 +12,20 @@ City Guard: If you are willing to attempt to take them I can help you out.
     City Guard: Well let me teach you this skill anyway. I'm sure it'll help you along the way.
 <<skill random>>
 ===
+title: WhoAmI 
+---
+City Guard: Welcome to {$currentCity}!
+City Guard: Oh you don't know who you are?
+City Guard: How interesting.
+City Guard: Well while you around you might be able to make some money by fixing our bandit problem.
+City Guard: They been breaking the connections between our cities for a while now.
+City Guard: If you are willing to attempt to take them I can help you out.
+-> Sure!
+    City Guard: Let me teach you this skill. I'm sure it'll help you along the way.
+-> I don't know...
+    City Guard: Well let me teach you this skill anyway. I'm sure it'll help you along the way.
+<<skill random>>
+===
 title: Default Started 1
 tags: questStart
 ---
@@ -22,16 +36,55 @@ City Guard: Can you travel to {$targetCity} for us and let them know we are safe
 City Guard: Many thanks!
 <<quest>>
 ===
+title: Delivery 1
+tags: questStart
+---
+<<pickcity>>
+City Guard: You looking to learn some new skills?.
+City Guard: If you take this package to {$targetCity} I can teach you a thing or two. 
+City Guard: I'll meet you there. 
+<<quest Delivery1Complete>>
+===
+title: Delivery1Complete
+---
+City Guard: Took you long enough.
+City Guard: Well thanks anyway. Here's your reward. 
+<<skill random>>
+===
 title: Default Completed 1
 tags: defaultQuestCompleted
 ---
 City Guard: Thanks for helping use out!
 City Guard: Here's a little something for your time.
-<<skill random>>
 ===
 title: Quest Failed 1
 tags: questFailed
 ---
 While you were out having fun, bandits attacked {$targetCity}.
+You have failed your current quest.
+===
+title: Quest Failed 2
+tags: questFailed
+---
+You tried your best but you were too late.
+The bandits attacked {$targetCity}.
+You have failed your current quest.
+===
+title: Quest Failed 3
+tags: questFailed
+---
+The bandits attacked {$targetCity}.
+You have failed your current quest.
+===
+title: Quest Failed 4
+tags: questFailed
+---
+A massive storm hit {$targetCity} before you couldn't complete you quest. 
+You have failed your current quest.
+===
+title: Quest Failed 5
+tags: questFailed
+---
+A riot has broken out in {$targetCity}. 
 You have failed your current quest.
 ===

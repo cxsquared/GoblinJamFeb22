@@ -39,3 +39,29 @@ What do you do?
     Bandit Grunt: Run on back to the city "hero".
 <<quest Welcome nearby>>
 ===
+title: Amnesia
+tags: storyStart
+---
+You slowly open your eyes.
+Your head is pounding.
+Where are you? How did you get here?
+Who am I?
+What do you do?
+-> Fight 
+    You find the first passerby and sucker punch them.
+    You look in the direction they where coming from and city a large city.
+-> Run
+    You see a nearby city and decide to run to it.
+-> Talk 
+    You stop the first person you see.
+    You ask them what the closest city is.
+    They point you in the right direction.
+-> Hide
+    You go and hide behind a tree.
+    After a while you see a few people all walking in the same direction.
+    You look in that direction and see a large city.
+-> Drink
+    You walk to the nearby river and drink from it.
+    You look in the direction of the river and see a large city.
+<<quest WhoAmI nearby>>
+===

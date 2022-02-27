@@ -106,3 +106,67 @@ What do you do?
     <<endif>>
     <<failquest>>
 ===
+title: Toll Booth 
+tags: random
+---
+Bandit Thug: Toll is 10 gold.
+Bandit Thug: Pay up!
+-> [plural value={$BreakDancing} one="Fight" two="Fight" other="Fight" /]
+    <<if $BreakDancing > 0>>
+        You challenge the bandits to a dance battle.
+        Your sick moves are too much for the bandits to handle.
+        They walk off in shame and leave you some of their toll earnings.
+        <<cityfavor + 5>>
+        <<money + 20>>
+    <<else>>
+        You put up your fists and prepare to fight.
+        There are too many bandits and you are overwhelmed.
+        They take your money and send you packing.
+        <<cityfavor - 15>>
+        <<money - 20>>
+    <<endif>>
+-> [plural value={$Swimming} one="Run" other="Run" two="Run" /]
+    You run and jump off the bridge into the water.
+    <<if $Swimming > 0>>
+        You quickly swim to the shore and avoid the bandits.
+        Hopefully the next passerby will have the same skills.
+        <<cityfavor - 15>>
+    <<else>>
+        But you forget you can't swim!
+        You struggle to the shore where the bandits are waiting for you.
+        They take your money and send you packing.
+        <<health - 10>>
+        <<cityfavor - 15>>
+        <<money - 20>>
+    <<endif>>
+    <<cityfavor - 20>>    
+-> Talk 
+    You talk to the bandits and they tell you about their history.
+    You bond over your shared love of BBQ.
+    Now that you are best buds, they let you pass with no toll.
+    <<banditfavor + 10>>
+    <<cityfavor - 20>>    
+    <<failquest>>
+-> [plural value={$Magic} one="Hide" other="Hide" two="Hide" /]
+    <<if $Magic > 0>>
+        You create a magical cloak over yourself.
+        You are completely invisible to the bandits.
+        While you are crossing you decide to take a bit of the bandits earnings.
+        <<cityfavor - 10>>
+        <<money + 20>>
+    <<else>>
+        You decide to hide and watch the bandits.
+        As night falls they decide to head home.
+        I guess that's one way to avoid a fight.
+        <<cityfavor - 10>>
+        <<failquest>>
+    <<endif>>
+-> Drink 
+    Instead of crossing the bridge you step down to the river to take a drink.
+    While you lean down you fall in.
+    Everything goes black and you wake up inside a nearby town.
+    <<cityfavor - 10>>
+    <<health - 20>>
+    <<failquest>>
+    <<totown>>
+===

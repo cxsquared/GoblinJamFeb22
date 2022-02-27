@@ -91,7 +91,11 @@ class QuestController {
 
 			if (!welcomed) {
 				welcomed = true;
-				dialogueManager.runNode("Welcome");
+				if (questEndNode == "") {
+					dialogueManager.runNode("Welcome");
+				} else {
+					dialogueManager.runNode(questEndNode);
+				}
 				return;
 			}
 
@@ -120,9 +124,9 @@ class QuestController {
 
 	function onQuestCompleted(e:QuestCompleted) {
 		timeTillNextQuest = questTime;
-		var nodeToRun = dialogueManager.storage.getValue("$questComplete");
-		if (nodeToRun != null && nodeToRun.type != null && nodeToRun.asString() != "") {
-			dialogueManager.runNode(nodeToRun.asString());
+		if (questEndNode != "") {
+			dialogueManager.runNode(questEndNode);
+			questEndNode = "";
 			return;
 		}
 
@@ -137,6 +141,8 @@ class QuestController {
 			currentQuestTarget.hasQuest = false;
 			currentQuestTarget = null;
 		}
+
+		questEndNode = e.completeQuestNode;
 
 		var icon = questIcon.get(Renderable).drawable;
 		var questT = questIcon.get(Transform);
