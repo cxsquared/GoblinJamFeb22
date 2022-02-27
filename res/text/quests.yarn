@@ -3,8 +3,8 @@ title: Welcome
 <<declare $currentCity = "">>
 <<declare $targetCity = "">>
 City Guard: Welcome to {$currentCity}!
-City Guard: Oh you ran into those pesky bandits?
-City Guard: They been breaking the connections between our cities for a while now.
+City Guard: Oh, you ran into those pesky bandits?
+City Guard: They've been breaking the connections between our cities for a while now.
 City Guard: If you are willing to attempt to take them I can help you out.
 -> Sure!
     City Guard: Let me teach you this skill. I'm sure it'll help you along the way.
@@ -15,10 +15,10 @@ City Guard: If you are willing to attempt to take them I can help you out.
 title: WhoAmI 
 ---
 City Guard: Welcome to {$currentCity}!
-City Guard: Oh you don't know who you are?
+City Guard: Oh, you don't know who you are?
 City Guard: How interesting.
-City Guard: Well while you around you might be able to make some money by fixing our bandit problem.
-City Guard: They been breaking the connections between our cities for a while now.
+City Guard: Well while you're around you might be able to make some money by fixing our bandit problem.
+City Guard: They've been breaking the connections between our cities for a while now.
 City Guard: If you are willing to attempt to take them I can help you out.
 -> Sure!
     City Guard: Let me teach you this skill. I'm sure it'll help you along the way.
@@ -32,7 +32,7 @@ tags: questStart
 <<pickcity>>
 City Guard: Welcome traveler.
 City Guard: We could use your assistance here. 
-City Guard: Can you travel to {$targetCity} for us and let them know we are safe.
+City Guard: Can you travel to {$targetCity} for us and let them know we are safe?
 City Guard: Many thanks!
 <<quest>>
 ===
@@ -40,7 +40,7 @@ title: Delivery 1
 tags: questStart
 ---
 <<pickcity>>
-City Guard: You looking to learn some new skills?.
+City Guard: You looking to learn some new skills?
 City Guard: If you take this package to {$targetCity} I can teach you a thing or two. 
 City Guard: I'll meet you there. 
 <<quest Delivery1Complete>>
@@ -99,14 +99,14 @@ City Guard: Unfortunately I hurt my leg and can't get there. Could you deliver t
 ===
 title: Delivery5Complete
 ---
-City Guard: Trivia is saved! Thankyou!
+City Guard: Trivia is saved! Thank you!
 City Guard: Question 1: Who just made a delivery and is going to get a reward? YOU!!!
 <<skill random>>
 ===
 title: Default Completed 1
 tags: defaultQuestCompleted
 ---
-City Guard: Thanks for helping use out!
+City Guard: Thanks for helping us out!
 City Guard: Here's a little something for your time.
 ===
 title: Quest Failed 1
@@ -131,7 +131,7 @@ You have failed your current quest.
 title: Quest Failed 4
 tags: questFailed
 ---
-A massive storm hit {$targetCity} before you couldn't complete you quest. 
+A massive storm hit {$targetCity} before you could complete your quest. 
 You have failed your current quest.
 ===
 title: Quest Failed 5

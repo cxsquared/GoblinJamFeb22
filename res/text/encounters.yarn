@@ -25,7 +25,7 @@ What do you do?
 -> [plural value={$TrashTalking} one="Talk" other="Talk" two="Talk" /]
     <<if $TrashTalking > 1>>
         Your mad trash talk is getting to the bandit.
-        They get's so angry that he passes out in rage.
+        They get so angry that he passes out in rage.
         <<cityfavor + 20>>
     <<else>>
         The bandit attacks you as you strike up a conversation.
@@ -38,10 +38,10 @@ What do you do?
     <<cityfavor - 10>>
     <<failquest>>
 -> [plural value={$Drunking} one="Drink" other="Drink" two="Drink" /]
-    You offer a drink to the bandit which they gladly accepts.
+    You offer a drink to the bandit which they gladly accept.
     <<if $Drunking > 0>>
         You easily beat his drinking skills and they pass out.
-        You take this opertunity to rob the bandit and take him to the athorities.
+        You take this opportunity to rob the bandit and take him to the authorities.
         <<cityfavor + 10>>
         <<money + 10>>
     <<else>>
@@ -58,7 +58,7 @@ A little old lady seems to be gathering flowers by the road.
 What do you do?
 -> Fight
     You challenge the lady to a fight!
-    All of a suden, she turns around and slices at you with a sword.
+    All of a sudden, she turns around and slices at you with a sword.
     Everything goes black and you wake up in a nearby town.
     <<health - 10>>
     <<totown>>
@@ -74,7 +74,7 @@ What do you do?
 -> [plural value={$Sneak} one="Hide" other="Hide" two="Hide" /]
     You decide to watch the old lady from the shadows.
     <<if $Sneak > 0>>
-        As you wait you hear foot steps coming up behind you.
+        As you wait you hear footsteps coming up behind you.
         You turn around and see a bandit approaching.
         You manage to beat him in combat.
         When you look back the old lady has dissapeared.
@@ -88,7 +88,7 @@ What do you do?
     <<endif>>
 -> [plural value={$Herbology} one="Drink" other="Drink" two="Drink" /]
     You approach the lady and ask if she plans on making tea with the flowers she is picking.
-    She respondes that indeed she is and invites you to have a cup.
+    She responds that indeed she is and invites you to have a cup.
     You follow her to her home where she brews you some tea.
     <<if $Herbology > 0>>
         As she is brewing the tea you notice that the leaves are very poisonous.
@@ -98,7 +98,7 @@ What do you do?
         The world feels like a better place now.
         <<cityfavor + 25>>
     <<else>>
-        Turns out those herbs where poisonous!
+        Turns out those herbs were poisonous!
         You pass out and wake up with all your goods taken.
         <<health - 5>>
         <<money - 50>>
@@ -151,7 +151,7 @@ Bandit Thug: Pay up!
     <<if $Magic > 0>>
         You create a magical cloak over yourself.
         You are completely invisible to the bandits.
-        While you are crossing you decide to take a bit of the bandits earnings.
+        While you are crossing you decide to take a bit of the bandits' earnings.
         <<cityfavor - 10>>
         <<money + 20>>
     <<else>>
@@ -173,7 +173,7 @@ Bandit Thug: Pay up!
 title: Green guy
 tags: random
 ---
-You see a person in green cloathing and a sword looking under heavy rocks.
+You see a person in green clothing and a sword looking under heavy rocks.
 -> [plural value={$SwordFighting} one="Fight" other="Fight" two="Fight" /]
     <<if $SwordFighting > 0>>
         You draw your sword and prepare to fight.
@@ -201,7 +201,7 @@ You see a person in green cloathing and a sword looking under heavy rocks.
 -> [plural value={$Magic} one="Hide" other="Hide" two="Hide" /]
     <<if $Magic > 0>>
         You ask the bandit for a dollar and "magically" turn it into a seed!
-        Bandit in Green: A Korok Seed! THANKYOU SO MUCH!
+        Bandit in Green: A Korok Seed! THANK YOU SO MUCH!
         <<cityfavor + 10>>
         <<money + 20>>
     <<else>>
@@ -212,7 +212,7 @@ You see a person in green cloathing and a sword looking under heavy rocks.
     <<endif>>
 -> Drink 
     Realizing how thirsty you are, you sit down and take a drink, and then another...
-    You Black out.
+    You black out.
     <<cityfavor - 10>>
     <<health - 20>>
     <<failquest>>

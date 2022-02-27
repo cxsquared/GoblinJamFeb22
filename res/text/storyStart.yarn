@@ -1,7 +1,7 @@
 title: Tutorial
 ---
 Welcome to Handelsroute.
-Move with WSAD or arrow keys.
+Move with WASD or arrow keys.
 Now go explore the lands and try to protect the trade routes.
 ===
 title: New Kid
@@ -15,19 +15,19 @@ What do you do?
 -> Fight 
     You step up to the bandit with your sword drawn.
     You swing at the bandit but he parries your blow.
-    Your sword falls from you hand.
-    Bandit Grunt: You've not worth my time. 
-    Bandit Grunt: Run on back to the city "hero".
+    Your sword falls from your hand.
+    Bandit Grunt: You're not worth my time. 
+    Bandit Grunt: Run on back to the city, "hero".
 -> Run
     You turn around and start running.
     Bandit Grunt: You made the right choice.
 -> Talk 
-    You stumble over your words as you try to reason with the Bandit.
+    You stumble over your words as you try to reason with the bandit.
     Bandit Grunt: There's no need for words. 
-    Bandit Grunt: Draw your sword if you really want to talk
+    Bandit Grunt: Draw your sword if you really want to talk.
     You start to back up and turn to walk away.
     Bandit Grunt: You made the right choice.
-    Bandit Grunt: Run on back to the city "hero".
+    Bandit Grunt: Run on back to the city, "hero".
 -> Hide
     You attempt to sneak and hide behind a tree.
     Bandit Grunt: ???
@@ -36,13 +36,13 @@ What do you do?
     Bandit Grunt: You've got to be kidding me. 
     Bandit Grunt: Whatever, I don't have time for this.
     The bandit walks over to you and throws you into the middle of the street.
-    Bandit Grunt: Run on back to the city "hero".
+    Bandit Grunt: Run on back to the city, "hero".
 -> Drink
     You take a big swig from you flask.
     The bandit walks over and rips your flask from your hand.
-    Bandit Grunt: Ugh you can only afford the cheap stuff.
-    Bandit Grunt: You've not worth my time. 
-    Bandit Grunt: Run on back to the city "hero".
+    Bandit Grunt: Ugh, you can only afford the cheap stuff.
+    Bandit Grunt: You're not worth my time. 
+    Bandit Grunt: Run on back to the city, "hero".
 <<quest Welcome nearby>>
 ===
 title: Amnesia
@@ -55,7 +55,7 @@ Who am I?
 What do you do?
 -> Fight 
     You find the first passerby and sucker punch them.
-    You look in the direction they where coming from and city a large city.
+    You look in the direction they were coming from and see a large city.
 -> Run
     You see a nearby city and decide to run to it.
 -> Talk 
