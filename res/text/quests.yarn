@@ -59,7 +59,7 @@ City Guard: Hey! We've gotten a lot of mint scout cookie orders from {$targetCit
 City Guard: Think you could deliver them for us?
 <<quest Delivery2Complete>>
 ===
-title: Delivery3Complete
+title: Delivery2Complete
 ---
 City Guard: You eat some cookies?
 City Guard: Well whatever, here's your reward.

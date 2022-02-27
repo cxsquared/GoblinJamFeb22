@@ -67,19 +67,27 @@ class QuestController {
 		if (availableQuestTarget == null && currentQuestTarget == null && welcomed && !gettingQuest) {
 			timeTillNextQuest -= dt;
 			if (timeTillNextQuest < 0) {
-				var icon = questIcon.get(Renderable).drawable;
-				var questT = questIcon.get(Transform);
-				icon.visible = true;
-
 				var target = getQuestCity();
 				var tt = target.get(Transform);
+				updateQuestIconLocation(tt);
 				availableQuestTarget = target.get(City);
-				questT.x = tt.x + tt.width / 2 - questT.width;
-				questT.y = tt.y;
 				nextTargetCity = null;
 				return;
 			}
 		}
+	}
+
+	function updateQuestIconLocation(targetTransform:Transform){
+		var icon = questIcon.get(Renderable).drawable;
+		var questT = questIcon.get(Transform);
+		var x = targetTransform.x + targetTransform.width / 2 - questT.width;
+		var y = targetTransform.y;
+		var drawable = questIcon.get(Renderable).drawable;
+		icon.visible = true;
+		questT.x = x;
+		questT.y = y;
+		drawable.x = x;
+		drawable.y = y;
 	}
 
 	function onEnteredCity(e:EnteredCity) {
@@ -145,7 +153,6 @@ class QuestController {
 		questEndNode = e.completeQuestNode;
 
 		var icon = questIcon.get(Renderable).drawable;
-		var questT = questIcon.get(Transform);
 		icon.visible = true;
 		if (e.nearset && playScene.encounterCities.length > 0) {
 			hxd.Math.shuffle(playScene.encounterCities);
@@ -153,8 +160,7 @@ class QuestController {
 			var tt = target.get(Transform);
 			currentQuestTarget = target.get(City);
 			currentQuestTarget.hasQuest = true;
-			questT.x = tt.x + tt.width / 2 - questT.width;
-			questT.y = tt.y;
+			updateQuestIconLocation(tt);
 			return;
 		}
 
@@ -163,8 +169,7 @@ class QuestController {
 			var tt = target.get(Transform);
 			currentQuestTarget = target.get(City);
 			currentQuestTarget.hasQuest = true;
-			questT.x = tt.x + tt.width / 2 - questT.width;
-			questT.y = tt.y;
+			updateQuestIconLocation(tt);
 			return;
 		}
 
@@ -173,8 +178,7 @@ class QuestController {
 			var tt = target.get(Transform);
 			currentQuestTarget = target.get(City);
 			currentQuestTarget.hasQuest = true;
-			questT.x = tt.x + tt.width / 2 - questT.width;
-			questT.y = tt.y;
+			updateQuestIconLocation(tt);
 			nextTargetCity = null;
 			return;
 		}
@@ -183,8 +187,7 @@ class QuestController {
 		var tt = target.get(Transform);
 		currentQuestTarget = target.get(City);
 		currentQuestTarget.hasQuest = true;
-		questT.x = tt.x + tt.width / 2 - questT.width;
-		questT.y = tt.y;
+		updateQuestIconLocation(tt);
 	}
 
 	function cleanupQuest() {
