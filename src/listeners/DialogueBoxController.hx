@@ -1,6 +1,7 @@
 package listeners;
 
 import event.DialogueHidden;
+import event.ShowSkill;
 import h2d.Interactive;
 import h2d.Flow;
 import assets.Assets;
@@ -15,9 +16,11 @@ import dialogue.event.LineShown;
 import h2d.Text;
 import h2d.ScaleGrid;
 import ecs.World;
+import ui.RandomSkill;
 import h2d.Scene;
 import h2d.Object;
 import ecs.event.EventBus;
+import ui.RandomSkill;
 
 class DialogueBoxController {
 	public var isTalking = false;
@@ -38,6 +41,7 @@ class DialogueBoxController {
 	var textState:DialogueBoxState;
 	var lineMarkup:MarkupParseResult;
 	var numberOfOptions:Int;
+	var randomSkill:RandomSkill;
 
 	public function new(eventBus:EventBus, world:World, parent:Object) {
 		this.eventBus = eventBus;
@@ -89,7 +93,14 @@ class DialogueBoxController {
 		eventBus.subscribe(LineShown, this.showLine);
 		eventBus.subscribe(OptionsShown, this.showOptions);
 		eventBus.subscribe(DialogueComplete, this.dialogueFinished);
+		eventBus.subscribe(ShowSkill, this.skillGenerated);
 	}
+
+	public function skillGenerated(event:ShowSkill) {
+		textState = DialogueBoxState.WaitingForSkillSelection;
+		randomSkill = event.randomSkill;
+	}
+
 
 	public function showLine(event:LineShown) {
 		if (!textFlow.contains(dialogueText)) {
@@ -108,7 +119,7 @@ class DialogueBoxController {
 
 		textState = DialogueBoxState.TypingText;
 
-		dialogueBackground.visible = true;
+  		dialogueBackground.visible = true;
 		if (dialogueTextName.text != "") {
 			dialogueName.visible = true;
 		} else {
@@ -136,7 +147,7 @@ class DialogueBoxController {
 		}
 		calculatingText.remove();
 		width += 32;
-		height += 16;
+ 		height += 16;
 
 		for (option in event.options) {
 			if (option.enabled) {
@@ -167,7 +178,8 @@ class DialogueBoxController {
 	public function dialogueFinished(event:DialogueComplete) {
 		dialogueBackground.visible = false;
 		dialogueName.visible = false;
-		textState = Hidden;
+		if (textState != DialogueBoxState.WaitingForSkillSelection)
+			textState = Hidden;
 		// Delay so we don't talk after finish
 		haxe.Timer.delay(function() {
 			isTalking = false;
@@ -186,9 +198,36 @@ class DialogueBoxController {
 		if (isTalking && Key.isPressed(Key.SPACE)) {
 			if (textState == TypingText) {
 				dialogueText.text = applyTextAttributes(currentText);
-				textState = DialogueBoxState.WaitingForContinue;
+   				textState = DialogueBoxState.WaitingForContinue;
 			} else if (textState == WaitingForContinue) {
 				eventBus.publishEvent(new NextLine());
+			}
+		}
+		if (textState == WaitingForSkillSelection){
+			if (numberOfOptions > 0 && Key.isPressed(Key.NUMBER_1)) {
+				var selection = randomSkill.getOptions()[0];
+				eventBus.publishEvent(selection);
+				textState=DialogueBoxState.Hidden;
+			}
+			if (numberOfOptions > 1 && Key.isPressed(Key.NUMBER_2)) {
+				var selection = randomSkill.getOptions()[1];
+				eventBus.publishEvent(selection);
+				textState=DialogueBoxState.Hidden;
+			}
+			if (numberOfOptions > 2 && Key.isPressed(Key.NUMBER_3)) {
+				var selection = randomSkill.getOptions()[2];
+				eventBus.publishEvent(selection);
+				textState=DialogueBoxState.Hidden;
+			}
+			if (numberOfOptions > 3 && Key.isPressed(Key.NUMBER_4)) {
+				var selection = randomSkill.getOptions()[3];
+				eventBus.publishEvent(selection);
+				textState=DialogueBoxState.Hidden;
+			}
+			if (numberOfOptions > 4 && Key.isPressed(Key.NUMBER_5)) {
+				var selection = randomSkill.getOptions()[4];
+				eventBus.publishEvent(selection);
+				textState=DialogueBoxState.Hidden;
 			}
 		}
 
@@ -291,4 +330,5 @@ enum DialogueBoxState {
 	WaitingForNextLine;
 	WaitingForContinue;
 	WaitingForOptionSelection;
+	WaitingForSkillSelection;
 }

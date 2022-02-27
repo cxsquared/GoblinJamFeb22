@@ -1,6 +1,7 @@
 package ui;
 
 import event.GainSkill;
+import event.ShowSkill;
 import assets.Assets;
 import h2d.Text;
 import h2d.Flow;
@@ -16,6 +17,7 @@ class RandomSkill extends Object {
 	var flow:Flow;
 	var scene:Scene;
 	var eventBus:EventBus;
+	var options:Array<GainSkill>;
 
 	public function new(eventBus:EventBus, skills:Array<Skill>, scene:Scene) {
 		super();
@@ -62,6 +64,7 @@ class RandomSkill extends Object {
 		width += 32;
 		height += 16;
 
+		options = new Array<GainSkill>();
 		for (skill in skills) {
 			var button = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, flow);
 			var text = new Text(Assets.font, button);
@@ -72,13 +75,20 @@ class RandomSkill extends Object {
 			button.height = height;
 
 			var i = new h2d.Interactive(width, height, button);
+			var gs = new GainSkill();
+			gs.skill = skill.name.getName();
+			gs.level = skill.level.getIndex() + 1;
+			options.push(gs);
 			i.onClick = function(e) {
-				var gs = new GainSkill();
-				gs.skill = skill.name.getName();
-				gs.level = skill.level.getIndex() + 1;
 				eventBus.publishEvent(gs);
 			};
 		}
+		var showSkill = new ShowSkill(this);
+		eventBus.publishEvent(showSkill);
+	}
+
+	public function getOptions(){
+		return options;
 	}
 
 	function buttonText(skill:Skill):String {
