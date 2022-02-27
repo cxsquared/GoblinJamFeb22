@@ -43,8 +43,7 @@ What do you do?
         The lands are doomed to be ruled by the bandits.
         <<endgame lose BanditKingWon>>
     <<endif>>
-    Bandit
--> Hide <<if false>>
+-> Hide
     Still needs figured out.
     <<endgame lose BanditKingWon>>
 -> Drink <<if false>>

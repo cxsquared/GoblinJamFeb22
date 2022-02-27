@@ -376,7 +376,7 @@ class PlayScene extends GameScene {
 			layers.add(bg, Const.BackgroundLayerIndex);
 		}
 
-		var tiles = new TileGroup(hxd.Res.sprites.map_sheet.toTile());
+		var tiles = new TileGroup(hxd.Res.levels.map_sheet.toTile());
 		layers.add(tiles, Const.EnityLayerIndex);
 		level.l_Tiles.render(tiles);
 
@@ -454,7 +454,7 @@ class PlayScene extends GameScene {
 	}
 
 	function createFire(x:Float, y:Float) {
-		var fireTile = hxd.Res.sprites.map_sheet.toTile().sub(14 * 32, 19 * 32, 63, 32);
+		var fireTile = hxd.Res.levels.map_sheet.toTile().sub(14 * 32, 19 * 32, 63, 32);
 		var fireBitmap = new Bitmap(fireTile);
 		layers.add(fireBitmap, Const.EnityLayerIndex);
 

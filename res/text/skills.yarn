@@ -1,17 +1,17 @@
 title:Skills
 ---
 // Skills 0 = no skill, 1 = basic, 2 = advanced
-<<declare $SwordFighting = 0>>
-<<declare $Swimming = 0>>
-<<declare $BreakDancing = 0>>
-<<declare $Beyblading = 0>>
-<<declare $TrashTalking = 0>>
-<<declare $ShakespeareanKnowledge = 0>>
-<<declare $Magic = 0>>
+<<declare $SwordFighting = 0>> //Used
+<<declare $Swimming = 0>> // Used
+<<declare $BreakDancing = 0>> // Used
+<<declare $Beyblading = 0>> // Used
+<<declare $TrashTalking = 0>> //Used 
+<<declare $ShakespeareanKnowledge = 0>> //Used
+<<declare $Magic = 0>> //Used
 <<declare $Drinking = 0>>
-<<declare $Drunking = 0>>
+<<declare $Drunking = 0>> // Used
 <<declare $WaitingTables = 0>>
-<<declare $Sneak = 0>>
-<<declare $Sprinting = 0>>
-<<declare $Herbology= 0>>
+<<declare $Sneak = 0>> // Used
+<<declare $Sprinting = 0>> // Used
+<<declare $Herbology= 0>> // Used
 ===
