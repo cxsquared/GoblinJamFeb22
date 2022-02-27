@@ -1,5 +1,6 @@
 package scene;
 
+import hxd.Timer;
 import event.BanditFavorChange;
 import event.HealthChange;
 import event.MoneyChange;
@@ -362,6 +363,7 @@ class PlayScene extends GameScene {
 		layers.add(uiParent, Const.UiLayerIndex);
 		dialogueBox = new DialogueBoxController(eventBus, world, uiParent);
 
+		world.update(Timer.elapsedTime);
 		dialogueManager.runNode("Tutorial");
 	}
 
