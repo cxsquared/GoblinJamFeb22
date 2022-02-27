@@ -8,7 +8,7 @@ title:Skills
 <<declare $TrashTalking = 0>> //Used 
 <<declare $ShakespeareanKnowledge = 0>> //Used
 <<declare $Magic = 0>> //Used
-<<declare $Drinking = 0>>
+<<declare $Drinking = 0>> // Used
 <<declare $Drunking = 0>> // Used
 <<declare $WaitingTables = 0>>
 <<declare $Sneak = 0>> // Used
