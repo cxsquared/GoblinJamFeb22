@@ -1,7 +1,6 @@
 package listeners;
 
 import event.DialogueHidden;
-import event.ShowSkill;
 import h2d.Interactive;
 import h2d.Flow;
 import assets.Assets;
@@ -41,7 +40,6 @@ class DialogueBoxController {
 	var textState:DialogueBoxState;
 	var lineMarkup:MarkupParseResult;
 	var numberOfOptions:Int;
-	var randomSkill:RandomSkill;
 
 	public function new(eventBus:EventBus, world:World, parent:Object) {
 		this.eventBus = eventBus;
@@ -93,12 +91,6 @@ class DialogueBoxController {
 		eventBus.subscribe(LineShown, this.showLine);
 		eventBus.subscribe(OptionsShown, this.showOptions);
 		eventBus.subscribe(DialogueComplete, this.dialogueFinished);
-		eventBus.subscribe(ShowSkill, this.skillGenerated);
-	}
-
-	public function skillGenerated(event:ShowSkill) {
-		textState = DialogueBoxState.WaitingForSkillSelection;
-		randomSkill = event.randomSkill;
 	}
 
 
@@ -201,33 +193,6 @@ class DialogueBoxController {
    				textState = DialogueBoxState.WaitingForContinue;
 			} else if (textState == WaitingForContinue) {
 				eventBus.publishEvent(new NextLine());
-			}
-		}
-		if (textState == WaitingForSkillSelection){
-			if (numberOfOptions > 0 && Key.isPressed(Key.NUMBER_1)) {
-				var selection = randomSkill.getOptions()[0];
-				eventBus.publishEvent(selection);
-				textState=DialogueBoxState.Hidden;
-			}
-			if (numberOfOptions > 1 && Key.isPressed(Key.NUMBER_2)) {
-				var selection = randomSkill.getOptions()[1];
-				eventBus.publishEvent(selection);
-				textState=DialogueBoxState.Hidden;
-			}
-			if (numberOfOptions > 2 && Key.isPressed(Key.NUMBER_3)) {
-				var selection = randomSkill.getOptions()[2];
-				eventBus.publishEvent(selection);
-				textState=DialogueBoxState.Hidden;
-			}
-			if (numberOfOptions > 3 && Key.isPressed(Key.NUMBER_4)) {
-				var selection = randomSkill.getOptions()[3];
-				eventBus.publishEvent(selection);
-				textState=DialogueBoxState.Hidden;
-			}
-			if (numberOfOptions > 4 && Key.isPressed(Key.NUMBER_5)) {
-				var selection = randomSkill.getOptions()[4];
-				eventBus.publishEvent(selection);
-				textState=DialogueBoxState.Hidden;
 			}
 		}
 

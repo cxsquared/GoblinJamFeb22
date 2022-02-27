@@ -1,7 +1,6 @@
 package ui;
 
 import event.GainSkill;
-import event.ShowSkill;
 import assets.Assets;
 import h2d.Text;
 import h2d.Flow;
@@ -9,6 +8,7 @@ import ecs.event.EventBus;
 import h2d.Scene;
 import h2d.ScaleGrid;
 import constant.Skill;
+import hxd.Key;
 import h2d.Object;
 
 class RandomSkill extends Object {
@@ -83,8 +83,24 @@ class RandomSkill extends Object {
 				eventBus.publishEvent(gs);
 			};
 		}
-		var showSkill = new ShowSkill(this);
-		eventBus.publishEvent(showSkill);
+	}
+
+	public function update(dt:Float):Void {
+		if (options.length > 0 && Key.isPressed(Key.NUMBER_1)) {
+			eventBus.publishEvent(options[0]);
+		}
+		if (options.length > 1 && Key.isPressed(Key.NUMBER_2)) {
+			eventBus.publishEvent(options[1]);
+		}
+		if (options.length > 2 && Key.isPressed(Key.NUMBER_3)) {
+			eventBus.publishEvent(options[2]);
+		}
+		if (options.length > 3 && Key.isPressed(Key.NUMBER_4)) {
+			eventBus.publishEvent(options[3]);
+		}
+		if (options.length > 4 && Key.isPressed(Key.NUMBER_5)) {
+			eventBus.publishEvent(options[4]);
+		}
 	}
 
 	public function getOptions(){
