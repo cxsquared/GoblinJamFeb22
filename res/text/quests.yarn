@@ -76,7 +76,8 @@ title: Delivery3Complete
 Jerry: Thanks, but it's not my birthday...
 Jerry: Well since you came all this way let me give you a reward.
 <<skill random>>
-===title: Delivery 4
+===
+title: Delivery 4
 tags: questStart
 ---
 <<pickcity>>
@@ -89,7 +90,8 @@ City Guard: Why did you bring us 43 chickens?
 City Guard: How did you even carry this many chickens?
 City Guard: This is weird but I guess I should reward you.
 <<skill random>>
-===title: Delivery 5
+===
+title: Delivery 5
 tags: questStart
 ---
 <<pickcity>>

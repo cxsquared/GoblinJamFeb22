@@ -60,6 +60,7 @@ class QuestController {
 
 		defaultQuestCompleted = dialogueManager.getNodeNames("defaultQuestCompleted");
 		questStart = dialogueManager.getNodeNames("questStart");
+		hxd.Math.shuffle(questStart);
 		questFailed = dialogueManager.getNodeNames("questFailed");
 	}
 
@@ -90,6 +91,8 @@ class QuestController {
 		drawable.y = y;
 	}
 
+	var currentQuestStart = 0;
+
 	function onEnteredCity(e:EnteredCity) {
 		currentCity = e.city;
 		dialogueManager.storage.setValue("$currentCity", currentCity.name.getName());
@@ -114,8 +117,7 @@ class QuestController {
 		if (currentCity == availableQuestTarget) {
 			gettingQuest = true;
 			cleanupQuest();
-			hxd.Math.shuffle(questStart);
-			dialogueManager.runNode(questStart[0]);
+			dialogueManager.runNode(questStart[currentQuestStart++ % questStart.length]);
 			return;
 		}
 	}
