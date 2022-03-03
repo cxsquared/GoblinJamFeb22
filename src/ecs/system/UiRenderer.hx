@@ -15,4 +15,6 @@ class UiRenderer implements IPerEntitySystem {
 		renderable.drawable.setPosition(transform.x, transform.y);
 		renderable.drawable.rotation = transform.rotation;
 	}
+
+	public function destroy() {}
 }

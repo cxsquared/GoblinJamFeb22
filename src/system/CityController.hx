@@ -31,4 +31,6 @@ class CityController implements IPerEntitySystem {
 	}
 
 	public var forComponents:Array<Class<Dynamic>> = [City, UiBar, Collidable];
+
+	public function destroy() {}
 }

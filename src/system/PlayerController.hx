@@ -19,6 +19,7 @@ class PlayerController implements IPerEntitySystem {
 	public var forComponents:Array<Class<Dynamic>> = [Player, Velocity, Transform];
 
 	var ca:ControllerAccess<GameAction>;
+	var eventBus:EventBus;
 	var stopPlayer = false;
 	var newClick = false;
 	var newX = 0.0;
@@ -28,14 +29,17 @@ class PlayerController implements IPerEntitySystem {
 	public function new(ca:ControllerAccess<GameAction>, eventBus:EventBus, scene:Scene) {
 		this.scene = scene;
 		this.ca = ca;
+		this.eventBus = eventBus;
 		// Stop player when dialogue starts
-		eventBus.subscribe(DialogueHidden, function(e) {
-			stopPlayer = true;
-		});
+		eventBus.subscribe(DialogueHidden, onDialogueHidden);
 		scene.addEventListener(onEvent);
 	}
 
 	var deadzone = 0.25;
+
+	function onDialogueHidden(e:DialogueHidden) {
+		stopPlayer = true;
+	}
 
 	function onEvent(e:Event) {
 		if (e.kind == EPush) {
@@ -131,5 +135,6 @@ class PlayerController implements IPerEntitySystem {
 
 	public function destroy() {
 		scene.removeEventListener(onEvent);
+		eventBus.unsubscribe(DialogueHidden, onDialogueHidden);
 	}
 }

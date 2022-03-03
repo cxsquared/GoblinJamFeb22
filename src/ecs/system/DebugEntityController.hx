@@ -75,6 +75,8 @@ class DebugEntityController implements IPerEntitySystem {
 	}
 
 	public var forComponents:Array<Class<Dynamic>> = [Transform];
+
+	public function destroy() {}
 }
 
 enum DebugLocation {

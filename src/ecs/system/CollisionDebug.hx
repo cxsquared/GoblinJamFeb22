@@ -60,4 +60,8 @@ class CollisionDebug implements IAllEntitySystems {
 
 		graphics.endFill();
 	}
+
+	public function destroy() {
+		graphics.remove();
+	}
 }

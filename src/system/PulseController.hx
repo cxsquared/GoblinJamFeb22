@@ -22,4 +22,6 @@ class PulseController implements IPerEntitySystem {
 	}
 
 	public var forComponents:Array<Class<Dynamic>> = [Pulse, Renderable];
+
+	public function destroy() {}
 }

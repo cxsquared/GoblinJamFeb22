@@ -66,4 +66,6 @@ class CameraController implements IPerEntitySystem {
 		t.y += v.dy;
 		v.dy *= v.friction * dt;
 	}
+
+	public function destroy() {}
 }

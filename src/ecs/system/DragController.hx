@@ -26,4 +26,6 @@ class DragController implements IPerEntitySystem {
 			t.y = scene.mouseY - t.height / 2;
 		}
 	}
+
+	public function destroy() {}
 }

@@ -32,4 +32,6 @@ class ShakeController implements IPerEntitySystem {
 		r.offsetX += Math.srand() * shake.shakePower;
 		r.offsetY += Math.srand() * shake.shakePower;
 	}
+
+	public function destroy() {}
 }

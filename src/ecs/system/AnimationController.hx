@@ -23,4 +23,6 @@ class AnimationController implements IPerEntitySystem {
 	}
 
 	public var forComponents:Array<Class<Dynamic>> = [Animation, Renderable];
+
+	public function destroy() {}
 }

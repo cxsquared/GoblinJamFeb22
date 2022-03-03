@@ -1,11 +1,8 @@
 import dn.heaps.input.ControllerAccess;
 import constant.GameAction;
 import dn.heaps.input.Controller;
-import scene.VictoryScene;
-import scene.DefeatScene;
 import hxd.res.Sound;
 import hxd.snd.Channel;
-import scene.MenuScene;
 import ecs.event.ChangeSceneEvent;
 import ecs.event.EventBus;
 import scene.PlayScene;

@@ -1,5 +1,6 @@
 package scene;
 
+import ecs.utils.WorldUtils;
 import hxd.Timer;
 import event.BanditFavorChange;
 import event.HealthChange;
@@ -49,7 +50,6 @@ import ecs.component.Velocity;
 import h2d.col.Bounds;
 import ecs.component.Camera;
 import ecs.system.Renderer;
-import h2d.Tile;
 import h2d.Bitmap;
 import ecs.component.Renderable;
 import ecs.component.Transform;
@@ -129,18 +129,7 @@ class PlayScene extends GameScene {
 		this.world = new World();
 
 		#if debug
-		console.addCommand("toggleDebug", "toggles debug text for an entity", [{name: "entityName", t: ConsoleArg.AString, opt: true}],
-			function(entityName:String) {
-				if (entityName != null && entityName != "") {
-					var e = world.getEntityByName(entityName);
-					e.debug = !e.debug;
-					return;
-				}
-
-				for (e in world.getEntities()) {
-					e.debug = !e.debug;
-				}
-			});
+		WorldUtils.registerConsoleDebugCommands(console, world);
 
 		console.addCommand("setSkill", "sets a skill and level(0,1,2)", [
 			{name: "name", t: ConsoleArg.AString, opt: false},
@@ -163,8 +152,7 @@ class PlayScene extends GameScene {
 		var level = levels.all_levels.Level_0;
 		setupLevel(level);
 
-		playerController = new PlayerController(Game.current.ca, eventBus, s2d);
-		world.addSystem(playerController);
+		world.addSystem(new PlayerController(Game.current.ca, eventBus, s2d));
 		world.addSystem(new CameraController(s2d, console));
 		world.addSystem(new CityController(eventBus));
 		world.addSystem(new LevelCollisionController(level.l_Collision));
@@ -500,7 +488,7 @@ class PlayScene extends GameScene {
 	}
 
 	public override function onRemove() {
-		playerController.destroy();
+		world.destroy();
 		super.onRemove();
 	}
 }

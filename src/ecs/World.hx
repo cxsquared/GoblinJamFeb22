@@ -123,7 +123,7 @@ class World {
 		}
 	}
 
-	public function debugLog(console:Console) {
+	public function logAll(console:Console) {
 		console.log("World");
 		console.log("Entities:");
 		for (entity in entities) {
@@ -140,7 +140,7 @@ class World {
 		}
 	}
 
-	public function debugEntity(console:Console, name:String) {
+	public function logEntity(console:Console, name:String) {
 		for (entity in entities) {
 			if (entity.name != name)
 				continue;
@@ -154,6 +154,16 @@ class World {
 					components[type][entity.id].log(console, color);
 				}
 			}
+		}
+	}
+
+	public function destroy() {
+		for (entity in entities) {
+			entity.destroy();
+		}
+
+		for (system in systems) {
+			system.destroy();
 		}
 	}
 

@@ -85,6 +85,8 @@ class Collision implements IAllEntitySystems {
 			}
 		}
 	}
+
+	public function destroy() {}
 }
 
 function overlaps(ac:Collidable, bc:Collidable):Bool {

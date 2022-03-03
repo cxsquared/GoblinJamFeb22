@@ -18,4 +18,6 @@ class UiBarController implements IPerEntitySystem {
 	}
 
 	public var forComponents:Array<Class<Dynamic>> = [UiBar, Transform];
+
+	public function destroy() {}
 }

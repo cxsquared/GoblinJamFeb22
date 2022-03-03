@@ -36,4 +36,6 @@ class EncounterController implements IPerEntitySystem {
 	}
 
 	public var forComponents:Array<Class<Dynamic>> = [Encounter, Collidable];
+
+	public function destroy() {}
 }

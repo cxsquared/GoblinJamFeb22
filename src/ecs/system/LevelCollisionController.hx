@@ -101,4 +101,6 @@ class LevelCollisionController implements IPerEntitySystem {
 	}
 
 	public var forComponents:Array<Class<Dynamic>> = [Transform, Player, Velocity];
+
+	public function destroy() {}
 }

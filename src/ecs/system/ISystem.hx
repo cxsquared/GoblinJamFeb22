@@ -4,4 +4,5 @@ import ecs.component.IComponent;
 
 interface ISystem {
 	var forComponents:Array<Class<Dynamic>>;
+	function destroy():Void;
 }

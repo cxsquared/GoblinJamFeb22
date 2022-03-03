@@ -37,4 +37,6 @@ class Renderer implements IPerEntitySystem {
 		renderable.drawable.setPosition(position.x, position.y);
 		renderable.drawable.rotation = transform.rotation;
 	}
+
+	public function destroy() {}
 }
