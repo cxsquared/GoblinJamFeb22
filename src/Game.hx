@@ -104,7 +104,7 @@ class Game extends hxd.App {
 		// Keyboard
 		controller.bindKeyboardAsStick(MoveX, MoveY, Key.UP, Key.LEFT, Key.DOWN, Key.RIGHT);
 		controller.bindKeyboardAsStick(MoveX, MoveY, Key.W, Key.A, Key.S, Key.D);
-		controller.bindKeyboard(SelectUp, null, [Key.UP, Key.A]);
+		controller.bindKeyboard(SelectUp, null, [Key.UP, Key.W]);
 		controller.bindKeyboard(SelectDown, null, [Key.DOWN, Key.S]);
 		controller.bindKeyboard(Select, Key.SPACE);
 		controller.bindKeyboard(MenuSelect1, Key.NUMBER_1);
