@@ -6,4 +6,5 @@ class Const {
 	public static final EnityLayerIndex = 1;
 	public static final UiLayerIndex = 2;
 	public static final DebugLayerIndex = 3;
+	public static final ConsoleLayer = 4;
 }

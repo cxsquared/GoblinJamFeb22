@@ -37,7 +37,7 @@ class DialogueBoxController {
 	var parent:Object;
 	var scene:Scene;
 	var world:World;
-	var currentText:String;
+	var currentText:String = "";
 	var rate = 0.0;
 	var speed = 1.0;
 	var textState:DialogueBoxState;
@@ -190,11 +190,27 @@ class DialogueBoxController {
 				button.width = width;
 				button.height = height;
 
+				var visibleIndex = options.numChildren - 1;
+
 				var i = new Interactive(button.getSize().width, button.getSize().height, button);
 				i.onClick = function(e) {
 					eventBus.publishEvent(new OptionSelected(option.index));
 				};
-				currentVisiableOptions.set(options.numChildren - 1, option);
+				i.onOver = function(e) {
+					var currHighlight = cast(options.getChildAt(currentSelectedOption), Drawable);
+					if (currHighlight != null) {
+						currHighlight.filter = null;
+					}
+
+					var newHighlight = cast(options.getChildAt(visibleIndex), Drawable);
+					newHighlight.filter = new Glow();
+					currentSelectedOption = visibleIndex;
+				};
+				i.onOut = function(e) {
+					var thisButton = cast(options.getChildAt(visibleIndex), Drawable);
+					thisButton.filter = null;
+				};
+				currentVisiableOptions.set(visibleIndex, option);
 			}
 		}
 

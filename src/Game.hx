@@ -1,3 +1,6 @@
+import assets.Assets;
+import constant.Const;
+import scene.MenuScene;
 import dn.heaps.input.ControllerAccess;
 import constant.GameAction;
 import dn.heaps.input.Controller;
@@ -35,7 +38,8 @@ class Game extends hxd.App {
 	}
 
 	override function init() {
-		s2d.scaleMode = ScaleMode.Fixed(800, 600, 1);
+		s2d.scaleMode = ScaleMode.LetterBox(800, 600);
+		// s2d.scaleMode = ScaleMode.Fixed(800, 600, 1);
 
 		// Heaps resources
 		#if (hl && debug)
@@ -49,12 +53,12 @@ class Game extends hxd.App {
 		#if debug
 		fps = new Text(DefaultFont.get());
 		fps.visible = false;
-		layer.addChildAt(fps, 3);
+		layer.addChildAt(fps, Const.DebugLayerIndex);
 		console = new Console(DefaultFont.get());
-		layer.addChildAt(console, 2);
+		layer.addChildAt(console, Const.ConsoleLayer);
 		editor = new WorldEditor(s2d);
 		editor.visible = false;
-		layer.addChildAt(editor, 1);
+		layer.addChildAt(editor, Const.DebugLayerIndex);
 		#end
 
 		globalEventBus = new EventBus(console);
@@ -96,14 +100,14 @@ class Game extends hxd.App {
 		controller.bindPadButtonsAsStick(MoveX, MoveY, DPAD_UP, DPAD_LEFT, DPAD_DOWN, DPAD_RIGHT);
 		controller.bindPad(SelectUp, DPAD_UP);
 		controller.bindPad(SelectUp, DPAD_DOWN);
-		controller.bindPad(Select, null, [A, B, X, Y]);
+		controller.bindPad(Select, A);
 
 		// Keyboard
 		controller.bindKeyboardAsStick(MoveX, MoveY, Key.UP, Key.LEFT, Key.DOWN, Key.RIGHT);
 		controller.bindKeyboardAsStick(MoveX, MoveY, Key.W, Key.A, Key.S, Key.D);
 		controller.bindKeyboard(SelectUp, null, [Key.UP, Key.W]);
 		controller.bindKeyboard(SelectDown, null, [Key.DOWN, Key.S]);
-		controller.bindKeyboard(Select, Key.SPACE);
+		controller.bindKeyboard(Select, null, [Key.SPACE, Key.E, Key.ENTER]);
 		controller.bindKeyboard(MenuSelect1, Key.NUMBER_1);
 		controller.bindKeyboard(MenuSelect2, Key.NUMBER_2);
 		controller.bindKeyboard(MenuSelect3, Key.NUMBER_3);
@@ -146,5 +150,12 @@ class Game extends hxd.App {
 		}
 		fps.text = "FPS: " + Timer.fps();
 		#end
+	}
+
+	override function dispose() {
+		music.stop();
+		layer.remove();
+		controller.dispose();
+		super.dispose();
 	}
 }

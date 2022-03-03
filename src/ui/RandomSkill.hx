@@ -95,6 +95,18 @@ class RandomSkill extends Object {
 			i.onClick = function(e) {
 				eventBus.publishEvent(gs);
 			};
+			i.onOver = function(e) {
+				var prevB = cast(flow.getChildAt(currentSelectedOption + 1), Drawable);
+				prevB.filter = null;
+
+				var curB = cast(flow.getChildAt(index + 1), Drawable);
+				curB.filter = new Glow();
+				currentSelectedOption = index;
+			}
+			i.onOut = function(e) {
+				var curB = cast(flow.getChildAt(currentSelectedOption + 1), Drawable);
+				curB.filter = null;
+			}
 		}
 	}
 
