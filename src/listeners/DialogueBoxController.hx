@@ -1,5 +1,10 @@
 package listeners;
 
+import h2d.Drawable;
+import hxyarn.dialogue.Option;
+import h2d.filter.Glow;
+import constant.GameAction;
+import dn.heaps.input.ControllerAccess;
 import event.DialogueHidden;
 import h2d.Interactive;
 import h2d.Flow;
@@ -15,11 +20,9 @@ import dialogue.event.LineShown;
 import h2d.Text;
 import h2d.ScaleGrid;
 import ecs.World;
-import ui.RandomSkill;
 import h2d.Scene;
 import h2d.Object;
 import ecs.event.EventBus;
-import ui.RandomSkill;
 
 class DialogueBoxController {
 	public var isTalking = false;
@@ -39,14 +42,23 @@ class DialogueBoxController {
 	var speed = 1.0;
 	var textState:DialogueBoxState;
 	var lineMarkup:MarkupParseResult;
-	var numberOfOptions:Int;
 	var spaceTocontinue:Text;
+	var ca:ControllerAccess<GameAction>;
+	var currentSelectedOption = 0;
+	var currentVisiableOptions = new Map<Int, OptionChoice>();
 
-	public function new(eventBus:EventBus, world:World, parent:Object) {
+	public function new(eventBus:EventBus, world:World, parent:Object, ca:ControllerAccess<GameAction>) {
 		this.eventBus = eventBus;
 		this.world = world;
 		this.parent = parent;
 		this.scene = parent.getScene();
+		this.ca = ca;
+
+		scene.addEventListener(function(e) {
+			if (e.kind == EPush) {
+				clicked = true;
+			}
+		});
 
 		dialogueBackground = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, parent);
 		dialogueBackground.visible = false;
@@ -130,9 +142,13 @@ class DialogueBoxController {
 		}
 	}
 
+	var optionsJustShown = false;
+
 	public function showOptions(event:OptionsShown) {
+		optionsJustShown = true;
 		spaceTocontinue.visible = false;
 		dialogueName.visible = false;
+		currentVisiableOptions.clear();
 
 		options.removeChildren();
 		if (!textFlow.contains(options)) {
@@ -153,9 +169,15 @@ class DialogueBoxController {
 		width += 32;
 		height += 16;
 
+		var selectedOption = false;
 		for (option in event.options) {
 			if (option.enabled) {
 				var button = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, options);
+				if (!selectedOption) {
+					selectedOption = true;
+					button.filter = new Glow();
+					currentSelectedOption = options.numChildren - 1;
+				}
 				var text = new HtmlText(Assets.font, button);
 				text.setPosition(8, 8);
 				var pluralAttribute = option.markup.tryGetAttributeWithName("plural");
@@ -172,8 +194,8 @@ class DialogueBoxController {
 				i.onClick = function(e) {
 					eventBus.publishEvent(new OptionSelected(option.index));
 				};
+				currentVisiableOptions.set(options.numChildren - 1, option);
 			}
-			numberOfOptions++;
 		}
 
 		textState = DialogueBoxState.WaitingForOptionSelection;
@@ -191,15 +213,26 @@ class DialogueBoxController {
 		}, 50);
 	}
 
+	var clicked = false;
+
 	public function update(dt:Float) {
-		if (textState == Hidden || textState == DialogueBoxState.WaitingForNextLine)
+		if (textState == Hidden || textState == DialogueBoxState.WaitingForNextLine) {
+			clicked = false;
 			return;
+		}
 
 		if (textState == TypingText) {
 			updateText(dt);
 		}
 
-		if (isTalking && Key.isPressed(Key.SPACE)) {
+		handleContinueText();
+		handleOptionSelect();
+
+		clicked = false;
+	}
+
+	function handleContinueText() {
+		if (isTalking && clickedContinue()) {
 			if (textState == TypingText) {
 				dialogueText.text = applyTextAttributes(currentText);
 				textState = DialogueBoxState.WaitingForContinue;
@@ -207,29 +240,79 @@ class DialogueBoxController {
 				eventBus.publishEvent(new NextLine());
 			}
 		}
+	}
 
+	function handleOptionSelect() {
 		if (textState == WaitingForOptionSelection) {
-			if (numberOfOptions > 0 && Key.isPressed(Key.NUMBER_1)) {
+			// Arrow/Pad
+			if (ca.isPressed(Select) && optionsJustShown == false) {
+				var option = currentVisiableOptions.get(currentSelectedOption);
 				textState = DialogueBoxState.WaitingForNextLine;
-				eventBus.publishEvent(new OptionSelected(0));
+				eventBus.publishEvent(new OptionSelected(option.index));
 			}
-			if (numberOfOptions > 1 && Key.isPressed(Key.NUMBER_2)) {
+
+			if (ca.isPressed(SelectDown)) {
+				// unhighlight
+				var curButton = cast(options.getChildAt(currentSelectedOption), Drawable);
+				curButton.filter = null;
+
+				// select new
+				currentSelectedOption = (currentSelectedOption + 1) % options.numChildren;
+
+				// highlight
+				var newButton = cast(options.getChildAt(currentSelectedOption), Drawable);
+				newButton.filter = new Glow();
+			}
+
+			if (ca.isPressed(SelectUp)) {
+				// unhighlight
+				var curButton = cast(options.getChildAt(currentSelectedOption), Drawable);
+				curButton.filter = null;
+
+				// select new
+				currentSelectedOption = currentSelectedOption - 1;
+				if (currentSelectedOption < 0) {
+					currentSelectedOption = options.numChildren - 1;
+				}
+
+				// highlight
+				var newButton = cast(options.getChildAt(currentSelectedOption), Drawable);
+				newButton.filter = new Glow();
+			}
+
+			// NumKeys
+			if (options.numChildren > 0 && ca.isPressed(MenuSelect1)) {
+				var option = currentVisiableOptions.get(0);
 				textState = DialogueBoxState.WaitingForNextLine;
-				eventBus.publishEvent(new OptionSelected(1));
+				eventBus.publishEvent(new OptionSelected(option.index));
 			}
-			if (numberOfOptions > 2 && Key.isPressed(Key.NUMBER_3)) {
+			if (options.numChildren > 1 && ca.isPressed(MenuSelect2)) {
+				var option = currentVisiableOptions.get(1);
 				textState = DialogueBoxState.WaitingForNextLine;
-				eventBus.publishEvent(new OptionSelected(2));
+				eventBus.publishEvent(new OptionSelected(option.index));
 			}
-			if (numberOfOptions > 3 && Key.isPressed(Key.NUMBER_4)) {
+			if (options.numChildren > 2 && ca.isPressed(MenuSelect3)) {
+				var option = currentVisiableOptions.get(2);
 				textState = DialogueBoxState.WaitingForNextLine;
-				eventBus.publishEvent(new OptionSelected(3));
+				eventBus.publishEvent(new OptionSelected(option.index));
 			}
-			if (numberOfOptions > 4 && Key.isPressed(Key.NUMBER_5)) {
+			if (options.numChildren > 3 && ca.isPressed(MenuSelect4)) {
+				var option = currentVisiableOptions.get(3);
 				textState = DialogueBoxState.WaitingForNextLine;
-				eventBus.publishEvent(new OptionSelected(4));
+				eventBus.publishEvent(new OptionSelected(option.index));
 			}
+			if (options.numChildren > 4 && ca.isPressed(MenuSelect5)) {
+				var option = currentVisiableOptions.get(3);
+				textState = DialogueBoxState.WaitingForNextLine;
+				eventBus.publishEvent(new OptionSelected(option.index));
+			}
+
+			optionsJustShown = false;
 		}
+	}
+
+	function clickedContinue() {
+		return clicked || ca.isPressed(GameAction.Select);
 	}
 
 	function updateText(dt:Float) {

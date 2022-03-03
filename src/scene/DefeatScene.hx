@@ -1,5 +1,6 @@
 package scene;
 
+import hxd.Event;
 import h2d.Bitmap;
 import ecs.event.ChangeSceneEvent;
 import hxd.Key;
@@ -12,7 +13,7 @@ import ecs.scene.GameScene;
 class DefeatScene extends GameScene {
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
-		Assets.init(Game.globalEventBus);
+		Assets.init(Game.current.globalEventBus);
 	}
 
 	public override function init():Void {
@@ -23,11 +24,24 @@ class DefeatScene extends GameScene {
 		t.textAlign = Align.MultilineCenter;
 		t.y = 100;
 		t.x = s2d.width / 2 - t.getSize().width / 2;
+
+		s2d.addEventListener(onEvent);
 	}
 
 	public override function update(dt:Float):Void {
-		if (Key.isPressed(Key.SPACE)) {
-			Game.globalEventBus.publishEvent(new ChangeSceneEvent(new PlayScene(getScene(), console)));
+		if (Game.current.ca.isPressed(Select)) {
+			Game.current.globalEventBus.publishEvent(new ChangeSceneEvent(new PlayScene(getScene(), console)));
 		}
+	}
+
+	function onEvent(e:Event) {
+		if (e.kind == EPush) {
+			Game.current.globalEventBus.publishEvent(new ChangeSceneEvent(new PlayScene(getScene(), console)));
+		}
+	}
+
+	public override function onRemove() {
+		getScene().removeEventListener(onEvent);
+		super.onRemove();
 	}
 }

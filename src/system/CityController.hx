@@ -25,7 +25,7 @@ class CityController implements IPerEntitySystem {
 		uiBar.value = city.favor;
 		uiBar.maxValue = city.maxFavor;
 
-		if (c.justEntered && c.event.target.has(Player)) {
+		if (c.justEntered && c.event != null && c.event.target.has(Player)) {
 			eventBus.publishEvent(new EnteredCity(city));
 		}
 	}

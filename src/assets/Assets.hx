@@ -9,8 +9,10 @@ class Assets {
 	public static var font:h2d.Font;
 
 	static var _initDone = false;
+	static var eventBus:EventBus;
 
 	public static function init(eventBus:EventBus) {
+		Assets.eventBus = eventBus;
 		if (_initDone) {
 			return;
 		}
@@ -27,7 +29,7 @@ class Assets {
 				// Only reload actual updated file from disk after a short delay, to avoid reading a file being written
 				haxe.Timer.delay(function() {
 					worldData.parseJson(res.entry.getText());
-					eventBus.publishEvent(new WorldReloaded());
+					Assets.eventBus.publishEvent(new WorldReloaded());
 				}, 200);
 			});
 		#end

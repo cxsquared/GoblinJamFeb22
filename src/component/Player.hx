@@ -1,5 +1,6 @@
 package component;
 
+import h2d.col.Point;
 import constant.Skill;
 import ecs.component.IComponent;
 import h2d.Console;
@@ -11,6 +12,7 @@ class Player implements IComponent {
 	public var health = 100;
 	public var money = 0;
 	public var banditFavor = 0;
+	public var target:Point;
 
 	public function new() {}
 

@@ -6,21 +6,15 @@ import event.HealthChange;
 import event.MoneyChange;
 import component.Pulse;
 import system.PulseController;
-import event.QuestFailed;
 import ecs.event.ChangeSceneEvent;
 import event.DialogueHidden;
 import event.GameEnd;
-import dn.heaps.TiledTexture;
 import listeners.QuestController;
 import hxd.Math;
-import event.PickCity;
 import ui.RandomSkill;
 import ecs.utils.MathUtils;
 import constant.Skill;
 import event.GainSkill;
-import event.QuestCompleted;
-import event.NewQuest;
-import event.EnteredCity;
 import constant.EncounterStage;
 import ui.Bar;
 import component.UiBar;
@@ -88,6 +82,7 @@ class PlayScene extends GameScene {
 	var gameOver = false;
 	var gameEndData:GameEnd;
 	var showEndDialogue = true;
+	var playerController:PlayerController;
 
 	public function new(heapsScene:Scene, console:Console) {
 		super(heapsScene, console);
@@ -168,7 +163,8 @@ class PlayScene extends GameScene {
 		var level = levels.all_levels.Level_0;
 		setupLevel(level);
 
-		world.addSystem(new PlayerController());
+		playerController = new PlayerController(Game.current.ca, eventBus, s2d);
+		world.addSystem(playerController);
 		world.addSystem(new CameraController(s2d, console));
 		world.addSystem(new CityController(eventBus));
 		world.addSystem(new LevelCollisionController(level.l_Collision));
@@ -276,9 +272,9 @@ class PlayScene extends GameScene {
 					return;
 				}
 				if (gameEndData.winner) {
-					Game.globalEventBus.publishEvent(new ChangeSceneEvent(new VictoryScene(getScene(), console)));
+					Game.current.globalEventBus.publishEvent(new ChangeSceneEvent(new VictoryScene(getScene(), console)));
 				} else {
-					Game.globalEventBus.publishEvent(new ChangeSceneEvent(new DefeatScene(getScene(), console)));
+					Game.current.globalEventBus.publishEvent(new ChangeSceneEvent(new DefeatScene(getScene(), console)));
 				}
 			}
 		});
@@ -324,7 +320,7 @@ class PlayScene extends GameScene {
 					skills.push(availableSkills.pop());
 				}
 
-				randomSkill = new RandomSkill(eventBus, skills, getScene());
+				randomSkill = new RandomSkill(eventBus, skills, getScene(), Game.current.ca);
 				layers.add(randomSkill, Const.UiLayerIndex);
 				return;
 			}
@@ -363,7 +359,7 @@ class PlayScene extends GameScene {
 
 		var uiParent = new Object();
 		layers.add(uiParent, Const.UiLayerIndex);
-		dialogueBox = new DialogueBoxController(eventBus, world, uiParent);
+		dialogueBox = new DialogueBoxController(eventBus, world, uiParent, Game.current.ca);
 
 		world.update(Timer.elapsedTime);
 		dialogueManager.runNode("Tutorial");
@@ -501,5 +497,10 @@ class PlayScene extends GameScene {
 		layers.add(fireBitmap, Const.EnityLayerIndex);
 
 		world.addEntity("fire").add(new Transform(x, y, 32, 32)).add(new Renderable(fireBitmap));
+	}
+
+	public override function onRemove() {
+		playerController.destroy();
+		super.onRemove();
 	}
 }

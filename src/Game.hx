@@ -1,3 +1,6 @@
+import dn.heaps.input.ControllerAccess;
+import constant.GameAction;
+import dn.heaps.input.Controller;
 import scene.VictoryScene;
 import scene.DefeatScene;
 import hxd.res.Sound;
@@ -22,14 +25,16 @@ class Game extends hxd.App {
 	var console:Console;
 
 	public var editor:WorldEditor;
+	public var globalEventBus:EventBus;
+	public var music:Channel;
+	public var controller:Controller<GameAction>;
+	public var ca:ControllerAccess<GameAction>;
 
-	public static var globalEventBus:EventBus;
-	public static var game:Game;
-	public static var music:Channel;
+	public static var current:Game;
 
 	public function new() {
 		super();
-		game = this;
+		current = this;
 	}
 
 	override function init() {
@@ -58,11 +63,7 @@ class Game extends hxd.App {
 		globalEventBus = new EventBus(console);
 		globalEventBus.subscribe(ChangeSceneEvent, onChangeScene);
 
-		#if debug
-		setGameScene(new PlayScene(s2d, console));
-		#else
-		setGameScene(new MenuScene(s2d, console));
-		#end
+		initController();
 
 		// If your audio file is named 'my_music.mp3'
 
@@ -82,6 +83,38 @@ class Game extends hxd.App {
 			// Play the music and loop it
 			music = musicResource.play(true, .9);
 		}
+
+		#if debug
+		setGameScene(new PlayScene(s2d, console));
+		#else
+		setGameScene(new MenuScene(s2d, console));
+		#end
+	}
+
+	function initController() {
+		controller = new Controller(GameAction);
+
+		// Controller
+		controller.bindPadLStick(MoveX, MoveY);
+		controller.bindPadButtonsAsStick(MoveX, MoveY, DPAD_UP, DPAD_LEFT, DPAD_DOWN, DPAD_RIGHT);
+		controller.bindPad(SelectUp, DPAD_UP);
+		controller.bindPad(SelectUp, DPAD_DOWN);
+		controller.bindPad(Select, null, [A, B, X, Y]);
+
+		// Keyboard
+		controller.bindKeyboardAsStick(MoveX, MoveY, Key.UP, Key.LEFT, Key.DOWN, Key.RIGHT);
+		controller.bindKeyboardAsStick(MoveX, MoveY, Key.W, Key.A, Key.S, Key.D);
+		controller.bindKeyboard(SelectUp, null, [Key.UP, Key.A]);
+		controller.bindKeyboard(SelectDown, null, [Key.DOWN, Key.S]);
+		controller.bindKeyboard(Select, Key.SPACE);
+		controller.bindKeyboard(MenuSelect1, Key.NUMBER_1);
+		controller.bindKeyboard(MenuSelect2, Key.NUMBER_2);
+		controller.bindKeyboard(MenuSelect3, Key.NUMBER_3);
+		controller.bindKeyboard(MenuSelect4, Key.NUMBER_4);
+		controller.bindKeyboard(MenuSelect5, Key.NUMBER_5);
+
+		ca = controller.createAccess();
+		// ca.lockCondition = () -> return destoryed || anyInputHasFocus();
 	}
 
 	public function onChangeScene(event:ChangeSceneEvent) {

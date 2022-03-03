@@ -1,5 +1,9 @@
 package ui;
 
+import h2d.Drawable;
+import h2d.filter.Glow;
+import constant.GameAction;
+import dn.heaps.input.ControllerAccess;
 import event.GainSkill;
 import assets.Assets;
 import h2d.Text;
@@ -18,12 +22,16 @@ class RandomSkill extends Object {
 	var scene:Scene;
 	var eventBus:EventBus;
 	var options:Array<GainSkill>;
+	var ca:ControllerAccess<GameAction>;
+	var optionsJustShown = false;
+	var currentSelectedOption = 0;
 
-	public function new(eventBus:EventBus, skills:Array<Skill>, scene:Scene) {
+	public function new(eventBus:EventBus, skills:Array<Skill>, scene:Scene, ca:ControllerAccess<GameAction>) {
 		super();
 		this.eventBus = eventBus;
 		this.scene = scene;
 		this.skills = skills;
+		this.ca = ca;
 
 		setupBg();
 		setupFlow();
@@ -49,6 +57,8 @@ class RandomSkill extends Object {
 	}
 
 	function setupOptions() {
+		optionsJustShown = true;
+		currentSelectedOption = 0;
 		var text = new Text(Assets.font, flow);
 		text.text = "Select a skill";
 
@@ -65,8 +75,11 @@ class RandomSkill extends Object {
 		height += 16;
 
 		options = new Array<GainSkill>();
-		for (skill in skills) {
+		for (index => skill in skills) {
 			var button = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, flow);
+			if (index == 0) {
+				button.filter = new Glow();
+			}
 			var text = new Text(Assets.font, button);
 			text.setPosition(8, 8);
 			text.text = buttonText(skill);
@@ -86,6 +99,40 @@ class RandomSkill extends Object {
 	}
 
 	public function update(dt:Float):Void {
+		// Arrow/Pad
+		if (ca.isPressed(Select) && optionsJustShown == false) {
+			eventBus.publishEvent(options[currentSelectedOption]);
+		}
+
+		if (ca.isPressed(SelectDown)) {
+			// unhighlight
+			var curButton = cast(flow.getChildAt(currentSelectedOption + 1), Drawable);
+			curButton.filter = null;
+
+			// select new
+			currentSelectedOption = (currentSelectedOption + 1) % (flow.numChildren - 1);
+
+			// highlight
+			var newButton = cast(flow.getChildAt(currentSelectedOption + 1), Drawable);
+			newButton.filter = new Glow();
+		}
+
+		if (ca.isPressed(SelectUp)) {
+			// unhighlight
+			var curButton = cast(flow.getChildAt(currentSelectedOption + 1), Drawable);
+			curButton.filter = null;
+
+			// select new
+			currentSelectedOption = currentSelectedOption - 1;
+			if (currentSelectedOption < 0) {
+				currentSelectedOption = flow.numChildren - 2;
+			}
+
+			// highlight
+			var newButton = cast(flow.getChildAt(currentSelectedOption + 1), Drawable);
+			newButton.filter = new Glow();
+		}
+
 		if (options.length > 0 && Key.isPressed(Key.NUMBER_1)) {
 			eventBus.publishEvent(options[0]);
 		}
@@ -101,9 +148,11 @@ class RandomSkill extends Object {
 		if (options.length > 4 && Key.isPressed(Key.NUMBER_5)) {
 			eventBus.publishEvent(options[4]);
 		}
+
+		optionsJustShown = false;
 	}
 
-	public function getOptions(){
+	public function getOptions() {
 		return options;
 	}
 
