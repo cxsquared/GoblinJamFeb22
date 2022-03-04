@@ -349,7 +349,7 @@ class PlayScene extends GameScene {
 		layers.add(uiParent, Const.UiLayerIndex);
 		dialogueBox = new DialogueBoxController(eventBus, world, uiParent, Game.current.ca);
 
-		world.update(Timer.elapsedTime);
+		world.update(Timer.elapsedTime, true);
 		dialogueManager.runNode("Tutorial");
 	}
 
@@ -378,7 +378,7 @@ class PlayScene extends GameScene {
 		if (dialogueBox.isTalking || randomSkill != null)
 			return;
 
-		world.update(dt);
+		world.update(Timer.tmod);
 		questController.update(dt);
 	}
 

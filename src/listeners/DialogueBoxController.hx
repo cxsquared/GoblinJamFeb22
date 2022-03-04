@@ -1,19 +1,17 @@
 package listeners;
 
+import ui.SelectableOptions;
 import h2d.Drawable;
-import hxyarn.dialogue.Option;
 import h2d.filter.Glow;
 import constant.GameAction;
 import dn.heaps.input.ControllerAccess;
 import event.DialogueHidden;
-import h2d.Interactive;
 import h2d.Flow;
 import assets.Assets;
 import hxyarn.dialogue.markup.MarkupParseResult;
 import h2d.HtmlText;
 import dialogue.event.OptionSelected;
 import dialogue.event.NextLine;
-import hxd.Key;
 import dialogue.event.DialogueComplete;
 import dialogue.event.OptionsShown;
 import dialogue.event.LineShown;
@@ -32,20 +30,18 @@ class DialogueBoxController {
 	var dialogueName:ScaleGrid;
 	var dialogueTextName:HtmlText;
 	var dialogueText:HtmlText;
-	var options:Flow;
+	var options:SelectableOptions;
 	var textFlow:Flow;
 	var parent:Object;
 	var scene:Scene;
 	var world:World;
 	var currentText:String = "";
-	var rate = 0.0;
-	var speed = 1.0;
+	var numberOfCharsToShow = 0.0;
+	var charsPerSecond = 25.0;
 	var textState:DialogueBoxState;
 	var lineMarkup:MarkupParseResult;
 	var spaceTocontinue:Text;
 	var ca:ControllerAccess<GameAction>;
-	var currentSelectedOption = 0;
-	var currentVisiableOptions = new Map<Int, OptionChoice>();
 
 	public function new(eventBus:EventBus, world:World, parent:Object, ca:ControllerAccess<GameAction>) {
 		this.eventBus = eventBus;
@@ -101,7 +97,10 @@ class DialogueBoxController {
 			- spaceTocontinue.getSize().height
 			- 8);
 
-		options = new Flow();
+		options = new SelectableOptions(ca);
+		options.onSelectCallback = function() {
+			textState = DialogueBoxState.WaitingForNextLine;
+		};
 		options.borderWidth = 8;
 		options.borderHeight = 8;
 		options.layout = FlowLayout.Vertical;
@@ -124,7 +123,7 @@ class DialogueBoxController {
 		}
 		textFlow.addChild(dialogueText);
 		isTalking = true;
-		rate = 0.0;
+		numberOfCharsToShow = 0;
 		currentText = event.line();
 		lineMarkup = event.markUpResults;
 		dialogueTextName.text = event.characterName();
@@ -148,9 +147,7 @@ class DialogueBoxController {
 		optionsJustShown = true;
 		spaceTocontinue.visible = false;
 		dialogueName.visible = false;
-		currentVisiableOptions.clear();
 
-		options.removeChildren();
 		if (!textFlow.contains(options)) {
 			textFlow.addChild(options);
 			textFlow.removeChild(dialogueText);
@@ -169,50 +166,27 @@ class DialogueBoxController {
 		width += 32;
 		height += 16;
 
-		var selectedOption = false;
+		var o = [];
 		for (option in event.options) {
 			if (option.enabled) {
-				var button = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, options);
-				if (!selectedOption) {
-					selectedOption = true;
-					button.filter = new Glow();
-					currentSelectedOption = options.numChildren - 1;
-				}
-				var text = new HtmlText(Assets.font, button);
-				text.setPosition(8, 8);
+				var formatedText = "";
 				var pluralAttribute = option.markup.tryGetAttributeWithName("plural");
 				if (pluralAttribute != null && pluralAttribute.properties[0].value.integerValue > 0) {
-					text.text = '<font color="#00FF00">*${option.text}*</font>';
+					formatedText = '<font color="#00FF00">*${option.text}*</font>';
 				} else {
-					text.text = option.text;
+					formatedText = option.text;
 				}
 
-				button.width = width;
-				button.height = height;
-
-				var visibleIndex = options.numChildren - 1;
-
-				var i = new Interactive(button.getSize().width, button.getSize().height, button);
-				i.onClick = function(e) {
-					eventBus.publishEvent(new OptionSelected(option.index));
-				};
-				i.onOver = function(e) {
-					var currHighlight = cast(options.getChildAt(currentSelectedOption), Drawable);
-					if (currHighlight != null) {
-						currHighlight.filter = null;
+				o.push({
+					text: formatedText,
+					callback: function() {
+						eventBus.publishEvent(new OptionSelected(option.index));
 					}
-
-					var newHighlight = cast(options.getChildAt(visibleIndex), Drawable);
-					newHighlight.filter = new Glow();
-					currentSelectedOption = visibleIndex;
-				};
-				i.onOut = function(e) {
-					var thisButton = cast(options.getChildAt(visibleIndex), Drawable);
-					thisButton.filter = null;
-				};
-				currentVisiableOptions.set(visibleIndex, option);
+				});
 			}
 		}
+
+		options.setOptions(o, width, height);
 
 		textState = DialogueBoxState.WaitingForOptionSelection;
 	}
@@ -260,70 +234,12 @@ class DialogueBoxController {
 
 	function handleOptionSelect() {
 		if (textState == WaitingForOptionSelection) {
-			// Arrow/Pad
-			if (ca.isPressed(Select) && optionsJustShown == false) {
-				var option = currentVisiableOptions.get(currentSelectedOption);
-				textState = DialogueBoxState.WaitingForNextLine;
-				eventBus.publishEvent(new OptionSelected(option.index));
+			if (optionsJustShown) {
+				optionsJustShown = false;
+				return;
 			}
 
-			if (ca.isPressed(SelectDown)) {
-				// unhighlight
-				var curButton = cast(options.getChildAt(currentSelectedOption), Drawable);
-				curButton.filter = null;
-
-				// select new
-				currentSelectedOption = (currentSelectedOption + 1) % options.numChildren;
-
-				// highlight
-				var newButton = cast(options.getChildAt(currentSelectedOption), Drawable);
-				newButton.filter = new Glow();
-			}
-
-			if (ca.isPressed(SelectUp)) {
-				// unhighlight
-				var curButton = cast(options.getChildAt(currentSelectedOption), Drawable);
-				curButton.filter = null;
-
-				// select new
-				currentSelectedOption = currentSelectedOption - 1;
-				if (currentSelectedOption < 0) {
-					currentSelectedOption = options.numChildren - 1;
-				}
-
-				// highlight
-				var newButton = cast(options.getChildAt(currentSelectedOption), Drawable);
-				newButton.filter = new Glow();
-			}
-
-			// NumKeys
-			if (options.numChildren > 0 && ca.isPressed(MenuSelect1)) {
-				var option = currentVisiableOptions.get(0);
-				textState = DialogueBoxState.WaitingForNextLine;
-				eventBus.publishEvent(new OptionSelected(option.index));
-			}
-			if (options.numChildren > 1 && ca.isPressed(MenuSelect2)) {
-				var option = currentVisiableOptions.get(1);
-				textState = DialogueBoxState.WaitingForNextLine;
-				eventBus.publishEvent(new OptionSelected(option.index));
-			}
-			if (options.numChildren > 2 && ca.isPressed(MenuSelect3)) {
-				var option = currentVisiableOptions.get(2);
-				textState = DialogueBoxState.WaitingForNextLine;
-				eventBus.publishEvent(new OptionSelected(option.index));
-			}
-			if (options.numChildren > 3 && ca.isPressed(MenuSelect4)) {
-				var option = currentVisiableOptions.get(3);
-				textState = DialogueBoxState.WaitingForNextLine;
-				eventBus.publishEvent(new OptionSelected(option.index));
-			}
-			if (options.numChildren > 4 && ca.isPressed(MenuSelect5)) {
-				var option = currentVisiableOptions.get(3);
-				textState = DialogueBoxState.WaitingForNextLine;
-				eventBus.publishEvent(new OptionSelected(option.index));
-			}
-
-			optionsJustShown = false;
+			options.update();
 		}
 	}
 
@@ -332,8 +248,8 @@ class DialogueBoxController {
 	}
 
 	function updateText(dt:Float) {
-		rate += speed * dt;
-		var textLenght = Math.min(currentText.length, Math.floor(rate * currentText.length));
+		numberOfCharsToShow += charsPerSecond * dt;
+		var textLenght = Math.min(currentText.length, Math.floor(numberOfCharsToShow));
 		var rawText = currentText.substring(0, Math.floor(textLenght));
 		dialogueText.text = applyTextAttributes(rawText);
 

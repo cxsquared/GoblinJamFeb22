@@ -1,15 +1,17 @@
 package system;
 
+import ecs.system.PerEntitySystemBase;
 import hxd.Timer;
 import ecs.component.Renderable;
 import component.Pulse;
 import ecs.Entity;
-import ecs.system.IPerEntitySystem;
 
-class PulseController implements IPerEntitySystem {
-	public function new() {}
+class PulseController extends PerEntitySystemBase {
+	public function new() {
+		super([Pulse, Renderable]);
+	}
 
-	public function update(entity:Entity, dt:Float) {
+	public override function update(entity:Entity, dt:Float) {
 		var p = entity.get(Pulse);
 		var r = entity.get(Renderable);
 		var d = r.drawable;
@@ -18,10 +20,7 @@ class PulseController implements IPerEntitySystem {
 			p.initialScale = d.scaleX;
 		}
 
-		d.setScale(p.initialScale + Math.abs(Math.sin(Timer.frameCount * p.speed)) * p.amount);
+		p.ticks++;
+		d.setScale(p.initialScale + Math.abs(Math.sin(p.ticks * p.speed)) * p.amount);
 	}
-
-	public var forComponents:Array<Class<Dynamic>> = [Pulse, Renderable];
-
-	public function destroy() {}
 }

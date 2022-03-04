@@ -9,18 +9,17 @@ import h2d.Console;
 import ecs.component.Transform;
 import ecs.component.Camera;
 
-class CameraController implements IPerEntitySystem {
-	public var forComponents:Array<Class<Dynamic>> = [Camera, Transform, Velocity];
-
+class CameraController extends PerEntitySystemBase {
 	var console:Console;
 	var scene:Scene;
 
 	public function new(scene:Scene, console:Console) {
+		super([Camera, Transform, Velocity]);
 		this.console = console;
 		this.scene = scene;
 	}
 
-	public function update(entity:Entity, dt:Float) {
+	public override function update(entity:Entity, dt:Float) {
 		var t = cast entity.get(Transform);
 		var v = cast entity.get(Velocity);
 		var camera = cast entity.get(Camera);
@@ -28,10 +27,10 @@ class CameraController implements IPerEntitySystem {
 
 		#if debug
 		if (Key.isDown(Key.NUMPAD_ADD)) {
-			camera.zoom += 0.1 * dt;
+			camera.zoom += 0.1;
 		}
 		if (Key.isDown(Key.NUMPAD_SUB)) {
-			camera.zoom -= 0.1 * dt;
+			camera.zoom -= 0.1;
 		}
 		#end
 
@@ -41,7 +40,9 @@ class CameraController implements IPerEntitySystem {
 			return;
 
 		if (!target.has(Transform)) {
+			#if debug
 			console.log("Camera target must have a Transform component");
+			#end
 			return;
 		}
 
@@ -55,17 +56,15 @@ class CameraController implements IPerEntitySystem {
 		if (d >= camera.deadzone) {
 			var angle = Math.atan2(targetPoint.y - cameraPoint.y, targetPoint.x - cameraPoint.x);
 
-			v.dx += Math.cos(angle) * (d - camera.deadzone) * camera.speed * dt;
-			v.dy += Math.sin(angle) * (d - camera.deadzone) * camera.speed * dt;
+			v.dx += Math.cos(angle) * (d - camera.deadzone) * camera.speed;
+			v.dy += Math.sin(angle) * (d - camera.deadzone) * camera.speed;
 		}
 
 		// Movements
 		t.x += v.dx;
-		v.dx *= v.friction * dt;
+		v.dx *= v.friction;
 
 		t.y += v.dy;
-		v.dy *= v.friction * dt;
+		v.dy *= v.friction;
 	}
-
-	public function destroy() {}
 }

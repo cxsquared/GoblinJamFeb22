@@ -6,12 +6,7 @@ import ecs.component.Transform;
 import ecs.component.Renderable;
 import ecs.component.Camera;
 
-class Renderer implements IPerEntitySystem {
-	public var forComponents:Array<Class<Dynamic>> = [Renderable, Transform];
-
-	var cameraTransform:Transform;
-	var cameraComponent:Camera;
-
+class Renderer extends PerEntitySystemBase {
 	public var camera(default, set):Entity;
 
 	public function set_camera(newCamera:Entity) {
@@ -20,11 +15,16 @@ class Renderer implements IPerEntitySystem {
 		return camera = newCamera;
 	}
 
+	var cameraTransform:Transform;
+	var cameraComponent:Camera;
+
 	public function new(camera:Entity) {
+		super([Renderable, Transform]);
+		fixed = false;
 		this.camera = camera;
 	}
 
-	public function update(entity:Entity, dt:Float) {
+	public override function update(entity:Entity, dt:Float) {
 		var renderable = entity.get(Renderable);
 		var transform = entity.get(Transform);
 
@@ -37,6 +37,4 @@ class Renderer implements IPerEntitySystem {
 		renderable.drawable.setPosition(position.x, position.y);
 		renderable.drawable.rotation = transform.rotation;
 	}
-
-	public function destroy() {}
 }

@@ -9,18 +9,18 @@ import hxd.res.DefaultFont;
 import h2d.Text;
 import ecs.World;
 import ecs.Entity;
-import ecs.system.IPerEntitySystem;
 
-class DebugEntityController implements IPerEntitySystem {
+class DebugEntityController extends PerEntitySystemBase {
 	var world:World;
 	var parent:Object;
 
 	public function new(world:World, debugParent:Object) {
+		super([Transform]);
 		this.world = world;
 		this.parent = debugParent;
 	}
 
-	public function update(entity:Entity, dt:Float) {
+	public override function update(entity:Entity, dt:Float) {
 		if (entity.isDebugEntity)
 			return;
 
@@ -73,10 +73,6 @@ class DebugEntityController implements IPerEntitySystem {
 
 		return new Point(t.x, t.y);
 	}
-
-	public var forComponents:Array<Class<Dynamic>> = [Transform];
-
-	public function destroy() {}
 }
 
 enum DebugLocation {

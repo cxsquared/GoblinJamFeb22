@@ -1,5 +1,5 @@
 package ecs.system;
 
-interface IAllEntitySystems extends ISystem {
+interface IAllEntitySystem extends ISystem {
 	function updateAll(entities:Array<Entity>, dt:Float):Void;
 }

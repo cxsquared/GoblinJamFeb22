@@ -1,5 +1,6 @@
 package system;
 
+import ecs.system.PerEntitySystemBase;
 import event.PlayEncounter;
 import dn.heaps.slib.SpriteLib.FrameData;
 import ecs.utils.MathUtils;
@@ -8,17 +9,17 @@ import ecs.event.EventBus;
 import ecs.component.Collidable;
 import component.Encounter;
 import ecs.Entity;
-import ecs.system.IPerEntitySystem;
 
-class EncounterController implements IPerEntitySystem {
+class EncounterController extends PerEntitySystemBase {
 	var eventBus:EventBus;
 	var firstEncounter = false;
 
 	public function new(eventBus:EventBus) {
+		super([Encounter, Collidable]);
 		this.eventBus = eventBus;
 	}
 
-	public function update(entity:Entity, dt:Float) {
+	public override function update(entity:Entity, dt:Float) {
 		var c = entity.get(Collidable);
 		var e = entity.get(Encounter);
 
@@ -34,8 +35,4 @@ class EncounterController implements IPerEntitySystem {
 			}
 		}
 	}
-
-	public var forComponents:Array<Class<Dynamic>> = [Encounter, Collidable];
-
-	public function destroy() {}
 }

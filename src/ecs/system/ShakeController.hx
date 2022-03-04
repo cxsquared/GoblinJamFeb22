@@ -4,14 +4,13 @@ import hxd.Math;
 import ecs.component.Renderable;
 import ecs.component.Shake;
 import ecs.Entity;
-import ecs.system.IPerEntitySystem;
 
-class ShakeController implements IPerEntitySystem {
-	public var forComponents:Array<Class<Dynamic>> = [Shake, Renderable];
+class ShakeController extends PerEntitySystemBase {
+	public function new() {
+		super([Shake, Renderable]);
+	}
 
-	public function new() {}
-
-	public function update(entity:Entity, dt:Float) {
+	public override function update(entity:Entity, dt:Float) {
 		var shake = entity.get(Shake);
 		var r = entity.get(Renderable);
 
@@ -32,6 +31,4 @@ class ShakeController implements IPerEntitySystem {
 		r.offsetX += Math.srand() * shake.shakePower;
 		r.offsetY += Math.srand() * shake.shakePower;
 	}
-
-	public function destroy() {}
 }

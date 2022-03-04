@@ -1,8 +1,10 @@
 package ecs;
 
+import hxd.Timer;
+import constant.Const;
+import ecs.system.IAllEntitySystem;
 import h2d.Console;
 import ecs.system.IPerEntitySystem;
-import ecs.system.IAllEntitySystem.IAllEntitySystems;
 import ecs.system.ISystem;
 import ecs.component.IComponent;
 
@@ -103,24 +105,45 @@ class World {
 		component.remove();
 	}
 
-	public function update(dt:Float) {
+	var _fixedUpdateAcc = 0.0;
+	var tmod = 1.0;
+
+	function getDefaultFramRate():Float {
+		#if heaps
+		return hxd.Timer.fps();
+		#else
+		return 30;
+		#end
+	}
+
+	var fixedTicks = 0;
+
+	public function update(dt:Float, forceTick:Bool = false) {
+		_fixedUpdateAcc += tmod;
 		for (system in systems) {
+			if (!forceTick && system.fixed && _fixedUpdateAcc <= getDefaultFramRate() / Const.FixedUpdateFps)
+				return;
+
+			var modDt = system.fixed ? 1. / Const.FixedUpdateFps : dt;
 			var entitiesToProcess = entities;
 			for (type in system.forComponents) {
 				entitiesToProcess = getEntitiesWithComponent(entitiesToProcess, Type.getClassName(type));
 			}
 
-			if (Std.isOfType(system, IAllEntitySystems)) {
-				Std.downcast(system, IAllEntitySystems).updateAll(entitiesToProcess, dt);
+			if (Std.isOfType(system, IAllEntitySystem)) {
+				Std.downcast(system, IAllEntitySystem).updateAll(entitiesToProcess, modDt);
 				continue;
 			}
 
 			var perEntitySystem = Std.downcast(system, IPerEntitySystem);
 
 			for (entity in entitiesToProcess) {
-				perEntitySystem.update(entity, dt);
+				perEntitySystem.update(entity, modDt);
 			}
 		}
+
+		if (_fixedUpdateAcc >= getDefaultFramRate() / Const.FixedUpdateFps)
+			_fixedUpdateAcc -= getDefaultFramRate() / Const.FixedUpdateFps;
 	}
 
 	public function logAll(console:Console) {

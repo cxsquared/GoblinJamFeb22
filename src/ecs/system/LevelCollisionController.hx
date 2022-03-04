@@ -6,9 +6,8 @@ import ecs.component.Velocity;
 import ecs.component.Transform;
 import ecs.component.Collidable;
 import ecs.Entity;
-import ecs.system.IPerEntitySystem;
 
-class LevelCollisionController implements IPerEntitySystem {
+class LevelCollisionController extends PerEntitySystemBase {
 	public var viewOffsetX:Int = 0;
 	public var viewOffsetY:Int = 0;
 
@@ -16,12 +15,13 @@ class LevelCollisionController implements IPerEntitySystem {
 	var tileSize:Int = Const.TileSize;
 
 	public function new(level:assets.World.Layer_Collision) {
+		super([Transform, Player, Velocity]);
 		// pass in layers to check for collision
 		// from LDTK work
 		this.level = level;
 	}
 
-	public function update(entity:Entity, dt:Float) {
+	public override function update(entity:Entity, dt:Float) {
 		var t = entity.get(Transform);
 		var v = entity.get(Velocity);
 
@@ -99,8 +99,4 @@ class LevelCollisionController implements IPerEntitySystem {
 		// Update based on LDTK data
 		return level.isCoordValid(cx, cy);
 	}
-
-	public var forComponents:Array<Class<Dynamic>> = [Transform, Player, Velocity];
-
-	public function destroy() {}
 }

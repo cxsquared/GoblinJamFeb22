@@ -2,7 +2,6 @@ package ecs.system;
 
 import h2d.col.Point;
 import ecs.utils.CameraUtils;
-import ecs.system.IAllEntitySystem.IAllEntitySystems;
 import ecs.component.Camera;
 import hxsl.Cache;
 import ecs.component.Transform;
@@ -11,23 +10,20 @@ import h2d.Object;
 import ecs.component.Collidable;
 import h2d.Graphics;
 
-class CollisionDebug implements IAllEntitySystems {
-	public var forComponents:Array<Class<Dynamic>> = [Collidable];
-
-	var graphics = new Graphics();
-
+class CollisionDebug extends AllEntitySystemBase {
 	public var cameraTransform:Transform;
 	public var camera:Camera;
 
+	var graphics = new Graphics();
+
 	public function new(camera:Entity, ?parent:Object) {
+		super([Collidable]);
 		graphics = new Graphics(parent);
 		this.camera = camera.get(Camera);
 		this.cameraTransform = camera.get(Transform);
 	}
 
-	public function update(entity:Entity, dt:Float) {}
-
-	public function updateAll(entities:Array<Entity>, dt:Float) {
+	public override function updateAll(entities:Array<Entity>, dt:Float) {
 		var toggle = false;
 		if (Key.isPressed(Key.F1)) {
 			toggle = true;
@@ -61,7 +57,7 @@ class CollisionDebug implements IAllEntitySystems {
 		graphics.endFill();
 	}
 
-	public function destroy() {
+	public override function destroy() {
 		graphics.remove();
 	}
 }

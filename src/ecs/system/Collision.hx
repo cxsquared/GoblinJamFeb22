@@ -1,16 +1,15 @@
 package ecs.system;
 
 import ecs.event.CollisionEvent;
-import ecs.system.IAllEntitySystem.IAllEntitySystems;
 import ecs.component.Collidable;
 import ecs.component.Transform;
 
-class Collision implements IAllEntitySystems {
-	public var forComponents:Array<Class<Dynamic>> = [Collidable, Transform];
+class Collision extends AllEntitySystemBase {
+	public function new() {
+		super([Collidable, Transform]);
+	}
 
-	public function new() {}
-
-	public function updateAll(entities:Array<Entity>, dt:Float) {
+	public override function updateAll(entities:Array<Entity>, dt:Float) {
 		// Update all positions
 		for (e in entities) {
 			var ec = e.get(Collidable);
@@ -85,8 +84,6 @@ class Collision implements IAllEntitySystems {
 			}
 		}
 	}
-
-	public function destroy() {}
 }
 
 function overlaps(ac:Collidable, bc:Collidable):Bool {

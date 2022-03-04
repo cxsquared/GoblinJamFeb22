@@ -3,10 +3,12 @@ package ecs.system;
 import ecs.component.Renderable;
 import ecs.component.Animation;
 
-class AnimationController implements IPerEntitySystem {
-	public function new() {}
+class AnimationController extends PerEntitySystemBase {
+	public function new() {
+		super([Animation, Renderable]);
+	}
 
-	public function update(entity:Entity, dt:Float) {
+	public override function update(entity:Entity, dt:Float) {
 		var r = entity.get(Renderable);
 		var a = entity.get(Animation);
 
@@ -21,8 +23,4 @@ class AnimationController implements IPerEntitySystem {
 			r.offsetY = info.offsetY;
 		}
 	}
-
-	public var forComponents:Array<Class<Dynamic>> = [Animation, Renderable];
-
-	public function destroy() {}
 }

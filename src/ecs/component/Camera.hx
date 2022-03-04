@@ -17,7 +17,7 @@ class Camera implements IComponent {
 		this.bounds = bounds;
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
-		this.speed = 10;
+		this.speed = 2.5;
 		this.deadzone = 5;
 		this.zoom = 1;
 	}

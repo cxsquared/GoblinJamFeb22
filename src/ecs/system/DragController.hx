@@ -6,16 +6,15 @@ import h2d.Scene;
 
 using tweenxcore.Tools;
 
-class DragController implements IPerEntitySystem {
-	public var forComponents:Array<Class<Dynamic>> = [Drag, Transform];
-
+class DragController extends PerEntitySystemBase {
 	var scene:Scene;
 
 	public function new(scene:Scene) {
+		super([Drag, Transform]);
 		this.scene = scene;
 	}
 
-	public function update(entity:Entity, dt:Float) {
+	public override function update(entity:Entity, dt:Float) {
 		var d = entity.get(Drag);
 		var t = entity.get(Transform);
 		d.interaction.x = t.x;
@@ -26,6 +25,4 @@ class DragController implements IPerEntitySystem {
 			t.y = scene.mouseY - t.height / 2;
 		}
 	}
-
-	public function destroy() {}
 }
