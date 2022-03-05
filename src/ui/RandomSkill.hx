@@ -59,7 +59,7 @@ class RandomSkill extends Object {
 		var text = new Text(Assets.font, flow);
 		text.text = "Select a skill";
 
-		optionButtons = new SelectableOptions(ca, flow);
+		optionButtons = new SelectableOptions(ca, hxd.Res.images.TalkBox_16x16.toTile(), flow);
 		optionButtons.verticalAlign = FlowAlign.Middle;
 		optionButtons.horizontalAlign = FlowAlign.Middle;
 		optionButtons.layout = FlowLayout.Vertical;

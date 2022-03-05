@@ -1,15 +1,7 @@
 package dialogue;
 
-import event.QuestFailed;
-import event.GameEnd;
-import event.PickCity;
-import event.GainSkill;
-import event.NewQuest;
-import event.TeleportToNearByTown;
-import event.BanditFavorChange;
-import event.MoneyChange;
-import event.HealthChange;
-import event.CityFavorChange;
+import h2d.Console;
+import dialogue.command.ICommandHandler;
 import hxyarn.dialogue.Command;
 import hxyarn.dialogue.OptionSet;
 import hxyarn.dialogue.Line;
@@ -36,11 +28,15 @@ class DialogueManager {
 	var stringTable:Map<String, StringInfo>;
 	var lastNodeName:String;
 	var runningDialouge:Bool = false;
+	var commandHandlers = new Map<String, ICommandHandler>();
+	var console:Console;
+	var debug = false;
 
 	public var waitingForOption:Bool = false;
 
-	public function new(eventBus:EventBus) {
+	public function new(eventBus:EventBus, console:Console) {
 		this.eventBus = eventBus;
+		this.console = console;
 		dialogue = new Dialogue(storage);
 
 		dialogue.logDebugMessage = this.logDebugMessage;
@@ -75,6 +71,15 @@ class DialogueManager {
 		return nodeNames;
 	}
 
+	public function addCommandHandler(handler:ICommandHandler) {
+		if (handler.commandName == null || handler.commandName == "") {
+			logErrorMessage("Command handler has no command name");
+			return;
+		}
+
+		commandHandlers.set(handler.commandName, handler);
+	}
+
 	public function load(texts:Array<String>, names:Array<String>) {
 		var job = CompilationJob.createFromStrings(texts, names, dialogue.library);
 		var compiler = Compiler.compile(job);
@@ -96,9 +101,15 @@ class DialogueManager {
 		dialogue.resume();
 	}
 
-	public function logDebugMessage(message:String):Void {}
+	public function logDebugMessage(message:String):Void {
+		if (debug) {
+			console.log(message);
+		}
+	}
 
-	public function logErrorMessage(message:String):Void {}
+	public function logErrorMessage(message:String):Void {
+		console.log(message, 0xFF0000);
+	}
 
 	public function nextLine(event:NextLine) {
 		if (dialogue.isActive())
@@ -153,94 +164,18 @@ class DialogueManager {
 	}
 
 	public function commandHandler(command:Command) {
-		if (StringTools.startsWith(command.text, "cityfavor")) {
-			var amount = getAmountFromChangeCommand(command.text);
-
-			eventBus.publishEvent(new CityFavorChange(amount));
-			resume();
-			return;
-		}
-
-		if (StringTools.startsWith(command.text, "health")) {
-			var amount = getAmountFromChangeCommand(command.text);
-			eventBus.publishEvent(new HealthChange(amount));
-			resume();
-			return;
-		}
-
-		if (StringTools.startsWith(command.text, "money")) {
-			var amount = getAmountFromChangeCommand(command.text);
-			eventBus.publishEvent(new MoneyChange(amount));
-			resume();
-			return;
-		}
-
-		if (StringTools.startsWith(command.text, "banditfavor")) {
-			var amount = getAmountFromChangeCommand(command.text);
-			eventBus.publishEvent(new BanditFavorChange(amount));
-			resume();
-			return;
-		}
-
-		if (command.text == "totown") {
-			eventBus.publishEvent(new TeleportToNearByTown());
-			resume();
-			return;
-		}
-
-		if (StringTools.startsWith(command.text, "quest")) {
-			var q = new NewQuest();
-			if (StringTools.contains(command.text, "nearby")) {
-				q.nearset = true;
+		var parts = command.text.split(' ');
+		var key = parts.shift();
+		if (commandHandlers.exists(key)) {
+			if (commandHandlers.get(key).handleCommand(parts)) {
+				resume();
+				return;
 			}
-
-			var parts = command.text.split(" ");
-			if (parts.length > 1 && parts[1] != "nearby") {
-				q.completeQuestNode = parts[1];
-			}
-
-			eventBus.publishEvent(q);
-			resume();
-			return;
 		}
 
-		if (command.text == "pickcity") {
-			eventBus.publishEvent(new PickCity());
-			resume();
-			return;
-		}
-
-		if (StringTools.startsWith(command.text, "endgame")) {
-			var parts = command.text.split(" ");
-			if (StringTools.contains(command.text, "lose")) {
-				eventBus.publishEvent(new GameEnd(false, parts[2]));
-			} else {
-				eventBus.publishEvent(new GameEnd(true, parts[2]));
-			}
-
-			resume();
-			return;
-		}
-
-		if (command.text == "failquest") {
-			eventBus.publishEvent(new QuestFailed());
-			resume();
-			return;
-		}
-
-		if (StringTools.startsWith(command.text, "skill")) {
-			var s = new GainSkill();
-			var parts = command.text.split(" ");
-			if (parts.length > 1 && parts[1] != "random") {
-				s.skill = parts[1];
-			}
-			if (parts.length > 2) {
-				s.skill = parts[2];
-			}
-			eventBus.publishEvent(s);
-			resume();
-			return;
-		}
+		#if debug
+		logDebugMessage("Unhandled command: " + command.text);
+		#end
 
 		resume();
 	}

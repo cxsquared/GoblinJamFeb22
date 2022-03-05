@@ -1,5 +1,15 @@
 package scene;
 
+import dialogue.command.QuestCommand;
+import dialogue.command.PickCityCommand;
+import dialogue.command.EndGameCommand;
+import dialogue.command.SkillCommand;
+import dialogue.command.FailQuestCommand;
+import dialogue.command.ToTownCommand;
+import dialogue.command.MoneyCommand;
+import dialogue.command.HealthCommand;
+import dialogue.command.BanditFavorCommand;
+import dialogue.command.CityFavorCommand;
 import ecs.utils.WorldUtils;
 import hxd.Timer;
 import event.BanditFavorChange;
@@ -99,7 +109,7 @@ class PlayScene extends GameScene {
 	}
 
 	function loadDialogue() {
-		dialogueManager = new DialogueManager(eventBus);
+		dialogueManager = new DialogueManager(eventBus, console);
 
 		var yarnText = [
 			hxd.Res.text.encounters.entry.getText(),
@@ -122,6 +132,17 @@ class PlayScene extends GameScene {
 		randomEncounters = dialogueManager.getNodeNames("random");
 		storyStarts = dialogueManager.getNodeNames("storyStart");
 		storyEnds = dialogueManager.getNodeNames("storyEnd");
+
+		dialogueManager.addCommandHandler(new CityFavorCommand(eventBus));
+		dialogueManager.addCommandHandler(new BanditFavorCommand(eventBus));
+		dialogueManager.addCommandHandler(new HealthCommand(eventBus));
+		dialogueManager.addCommandHandler(new MoneyCommand(eventBus));
+		dialogueManager.addCommandHandler(new ToTownCommand(eventBus));
+		dialogueManager.addCommandHandler(new FailQuestCommand(eventBus));
+		dialogueManager.addCommandHandler(new QuestCommand(eventBus));
+		dialogueManager.addCommandHandler(new PickCityCommand(eventBus));
+		dialogueManager.addCommandHandler(new SkillCommand(eventBus));
+		dialogueManager.addCommandHandler(new EndGameCommand(eventBus));
 	}
 
 	public override function init():Void {

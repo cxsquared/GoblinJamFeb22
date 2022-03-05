@@ -1,5 +1,6 @@
 package ui;
 
+import h2d.Tile;
 import constant.GameAction;
 import dn.heaps.input.ControllerAccess;
 import h2d.Interactive;
@@ -19,13 +20,15 @@ typedef SelectOption = {
 class SelectableOptions extends Flow {
 	public var currentSelectedOptionIndex = 0;
 	public var onSelectCallback:() -> Void = null;
+	public var bgTile:Tile = null;
 
 	var options:Array<SelectOption>;
 	var ca:ControllerAccess<GameAction>;
 
-	public function new(ca:ControllerAccess<GameAction>, ?parent:Object) {
+	public function new(ca:ControllerAccess<GameAction>, bgTile:Tile, ?parent:Object) {
 		super(parent);
 		this.ca = ca;
+		this.bgTile = bgTile;
 	}
 
 	public function clearOptions() {
@@ -39,7 +42,7 @@ class SelectableOptions extends Flow {
 		this.options = options;
 
 		for (index => option in options) {
-			var button = new ScaleGrid(hxd.Res.images.TalkBox_16x16.toTile(), 4, 4, this);
+			var button = new ScaleGrid(bgTile, 4, 4, this);
 
 			if (index == currentSelectedOptionIndex) {
 				button.filter = new Glow();

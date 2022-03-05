@@ -97,7 +97,7 @@ class DialogueBoxController {
 			- spaceTocontinue.getSize().height
 			- 8);
 
-		options = new SelectableOptions(ca);
+		options = new SelectableOptions(ca, hxd.Res.images.TalkBox_16x16.toTile());
 		options.onSelectCallback = function() {
 			textState = DialogueBoxState.WaitingForNextLine;
 		};
