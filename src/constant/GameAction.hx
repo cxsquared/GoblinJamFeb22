@@ -1,15 +1,14 @@
 package constant;
 
-enum GameAction {
-	MoveX;
-	MoveY;
-
-	SelectUp;
-	SelectDown;
-	Select;
-	MenuSelect1;
-	MenuSelect2;
-	MenuSelect3;
-	MenuSelect4;
-	MenuSelect5;
+enum abstract GameAction(Int) to Int {
+	var MoveX;
+	var MoveY;
+	var SelectUp;
+	var SelectDown;
+	var Select;
+	var MenuSelect1;
+	var MenuSelect2;
+	var MenuSelect3;
+	var MenuSelect4;
+	var MenuSelect5;
 }
